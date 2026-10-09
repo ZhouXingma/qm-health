@@ -46,6 +46,8 @@ struct ShadowSpec {
 enum AppShadow {
     static let card = ShadowSpec(color: Color("content_bg").opacity(0.3), radius: 2, x: 0, y: 1)
     static let lift = ShadowSpec(color: Color.black.opacity(0.08), radius: 8, x: 0, y: 4)
+    /// 认证页面板：向上投的暖色阴影，强化卡面从背景中浮起
+    static let authPanel = ShadowSpec(color: Color.theme(.primary).opacity(0.18), radius: 18, x: 0, y: -6)
 }
 
 /// 颜色令牌
@@ -266,6 +268,53 @@ extension View {
         self.padding(.vertical,AppSpacing.regular)
             .padding(.horizontal,AppSpacing.regular)
             .glassEffect(.regular.interactive())
+    }
+}
+
+// MARK: - 认证页样式（登录 / 注册）
+
+extension View {
+    /// 认证页面板：白色/深色卡面，仅顶部圆角，直通屏幕底部
+    ///
+    /// 与顶部的主题色渐变衔接，避免整屏灰底与暖色背景割裂。
+    func authPanelStyle() -> some View {
+        let shape = UnevenRoundedRectangle(
+            topLeadingRadius: 30,
+            bottomLeadingRadius: 0,
+            bottomTrailingRadius: 0,
+            topTrailingRadius: 30,
+            style: .continuous
+        )
+        return self
+            .background {
+                shape
+                    .fill(AppColor.content)
+                    .overlay(alignment: .top) {
+                        // 顶部淡主题色，让卡面与上方渐变过渡自然
+                        LinearGradient(
+                            colors: [Color.theme(.primary).opacity(0.07), .clear],
+                            startPoint: .top,
+                            endPoint: .bottom
+                        )
+                        .frame(height: 90)
+                    }
+                    .clipShape(shape)
+                    .appShadow(AppShadow.authPanel)
+            }
+            .ignoresSafeArea(edges: .bottom)
+    }
+
+    /// 认证页输入框：主题色浅底 + 细描边（用于卡面上，保证与底色有对比）
+    ///
+    /// 固定内容高度 24，使带图标 / 带按钮的各行高度完全一致。
+    func authFieldStyle() -> some View {
+        let shape = RoundedRectangle(cornerRadius: AppRadius.large, style: .continuous)
+        return self
+            .frame(height: 24)
+            .padding(.vertical, AppSpacing.regular)
+            .padding(.horizontal, AppSpacing.regular)
+            .background(shape.fill(Color.theme(.primary).opacity(0.08)))
+            .overlay(shape.stroke(Color.theme(.primary).opacity(0.16), lineWidth: 1))
     }
 }
 

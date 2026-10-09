@@ -27,39 +27,46 @@ struct PasswordLogin: View {
         ScrollView {
             VStack(spacing: AppSpacing.regular) {
                 HStack(spacing: AppSpacing.compact) {
+                    Image(systemName: "person")
+                        .font(.system(size: 15))
+                        .foregroundStyle(Color.theme(.primary).opacity(0.7))
                     TextField("手机号/邮箱", text: $account)
-                        .padding(.horizontal, AppSpacing.compact)
+                        .font(.system(size: 16))
                 }
                 .frame(maxWidth:.infinity, alignment: .leading)
-                .inputFieldStyle()
+                .authFieldStyle()
                 .padding(.horizontal, AppSpacing.screen)
 
                 HStack(spacing: AppSpacing.compact) {
+                    Image(systemName: "lock")
+                        .font(.system(size: 15))
+                        .foregroundStyle(Color.theme(.primary).opacity(0.7))
                     if showPassword {
                         TextField("输入密码", text: $password)
+                            .font(.system(size: 16))
                             .textContentType(.oneTimeCode)
                             .autocorrectionDisabled(true)
                             .textInputAutocapitalization(.never)
-                            .padding(.leading, AppSpacing.compact)
                     } else {
                         SecureField("输入密码", text: $password)
+                            .font(.system(size: 16))
                             .textContentType(.oneTimeCode)
                             .autocorrectionDisabled(true)
                             .textInputAutocapitalization(.never)
-                            .padding(.leading, AppSpacing.compact)
                     }
                     Button {
                         showPassword.toggle()
                     } label: {
                         Image(systemName: showPassword ? "eye" : "eye.slash")
                             .font(.system(size: 15))
-                            .foregroundStyle(Color.black)
-                            .padding(.trailing, AppSpacing.compact)
+                            .foregroundStyle(AppColor.textSecondary)
+                            .frame(width: 24, height: 24)
+                            .contentShape(Rectangle())
                     }
                     .buttonStyle(.plain)
                 }
                 .frame(maxWidth:.infinity, alignment: .leading)
-                .inputFieldStyle()
+                .authFieldStyle()
 
                 .padding(.horizontal, AppSpacing.screen)
 

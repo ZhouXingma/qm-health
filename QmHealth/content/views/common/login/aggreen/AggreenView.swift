@@ -16,11 +16,13 @@ struct AggreenView: View {
             Button {
                 isAgreen.toggle()
             } label: {
-                Image(systemName: isAgreen ? "checkmark.circle" : "circle")
-                    .font(.system(size: 13))
-                    .foregroundStyle(Color.theme(.primary))
+                Image(systemName: isAgreen ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 17))
+                    .foregroundStyle(isAgreen ? Color.theme(.primary) : AppColor.textSecondary)
+                    .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+            .animation(.easeInOut(duration: 0.15), value: isAgreen)
 
             Text("我已阅读并同意")
 
