@@ -274,9 +274,9 @@ extension View {
 // MARK: - 认证页样式（登录 / 注册）
 
 extension View {
-    /// 认证页面板：白色/深色卡面，仅顶部圆角，直通屏幕底部
+    /// 认证页面板：液态玻璃卡面，仅顶部圆角，直通屏幕底部
     ///
-    /// 与顶部的主题色渐变衔接，避免整屏灰底与暖色背景割裂。
+    /// 玻璃材质会折射背景的暖色渐变，与上方标题区连成一体。
     func authPanelStyle() -> some View {
         let shape = UnevenRoundedRectangle(
             topLeadingRadius: 30,
@@ -286,25 +286,14 @@ extension View {
             style: .continuous
         )
         return self
-            .background {
-                shape
-                    .fill(AppColor.content)
-                    .overlay(alignment: .top) {
-                        // 顶部淡主题色，让卡面与上方渐变过渡自然
-                        LinearGradient(
-                            colors: [Color.theme(.primary).opacity(0.07), .clear],
-                            startPoint: .top,
-                            endPoint: .bottom
-                        )
-                        .frame(height: 90)
-                    }
-                    .clipShape(shape)
-                    .appShadow(AppShadow.authPanel)
+            .appGlass(.regular, in: shape) {
+                shape.fill(AppColor.content.opacity(0.75))
             }
+            .appShadow(AppShadow.authPanel)
             .ignoresSafeArea(edges: .bottom)
     }
 
-    /// 认证页输入框：主题色浅底 + 细描边（用于卡面上，保证与底色有对比）
+    /// 认证页输入框：白色（深色模式下为深灰）实底 + 玻璃边缘高光 + 主题色细边
     ///
     /// 固定内容高度 24，使带图标 / 带按钮的各行高度完全一致。
     func authFieldStyle() -> some View {
@@ -313,8 +302,11 @@ extension View {
             .frame(height: 24)
             .padding(.vertical, AppSpacing.regular)
             .padding(.horizontal, AppSpacing.regular)
-            .background(shape.fill(Color.theme(.primary).opacity(0.08)))
-            .overlay(shape.stroke(Color.theme(.primary).opacity(0.16), lineWidth: 1))
+            .background(shape.fill(AppColor.content.opacity(0.92)))
+            .appGlass(.regular.interactive(), in: shape) {
+                shape.fill(AppColor.content)
+            }
+            .overlay(shape.stroke(Color.theme(.primary).opacity(0.20), lineWidth: 1))
     }
 }
 

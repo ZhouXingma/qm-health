@@ -48,7 +48,7 @@ struct Login: View {
                 Circle()
                     .fill(Color.clear)
                     .frame(width: 40, height: 40)
-                    .appGlass(.clear.tint(Color.theme(.primary).opacity(0.14)).interactive(), in: Circle()) {
+                    .appGlass(.regular.tint(Color.theme(.primary).opacity(0.16)).interactive(), in: Circle()) {
                         Circle().fill(AppColor.content.opacity(0.5))
                     }
                     .overlay {
@@ -87,9 +87,9 @@ struct Login: View {
             tabItem("注册", index: 1)
         }
         .padding(4)
-        .background(
-            Capsule(style:.continuous).fill(Color.theme(.primary).opacity(0.10))
-        )
+        .appGlass(.clear, in: Capsule(style:.continuous)) {
+            Capsule(style:.continuous).fill(AppColor.content.opacity(0.45))
+        }
         .padding(.horizontal, AppSpacing.screen)
         .animation(.spring(response: 0.32, dampingFraction: 0.86), value: loginModel.loginType)
     }
@@ -104,15 +104,15 @@ struct Login: View {
         } label: {
             Text(title)
                 .font(.system(size: 16, weight: .semibold))
-                .foregroundStyle(active ? Color.theme(.primary) : Color.theme(.primary).opacity(0.55))
+                .foregroundStyle(active ? .white : Color.theme(.primary).opacity(0.75))
                 .frame(maxWidth: .infinity)
                 .padding(.vertical, 10)
                 .background {
                     if active {
                         Capsule(style: .continuous)
-                            .fill(AppColor.content)
+                            .fill(Color.theme(.primary))
                             .matchedGeometryEffect(id: "authTabIndicator", in: tabIndicator)
-                            .appShadow(AppShadow.card)
+                            .shadow(color: Color.theme(.primary).opacity(0.40), radius: 8, y: 3)
                     }
                 }
                 .contentShape(Capsule(style: .continuous))
@@ -124,24 +124,31 @@ struct Login: View {
     private var authBackground: some View {
         ZStack {
             AppColor.background
+            // 铺满全屏的暖色渐变：玻璃面板、输入框都靠它折射出颜色
             LinearGradient(
-                colors: [AppColor.primary.opacity(0.34),
-                         AppColor.secondary.opacity(0.20),
+                colors: [AppColor.primary.opacity(0.40),
+                         AppColor.secondary.opacity(0.28),
+                         AppColor.primary.opacity(0.12),
                          Color.clear],
                 startPoint: .top,
-                endPoint: .center
+                endPoint: .bottom
             )
-            // 顶部两处柔光，让暖色背景有层次而不是一块纯色
+            // 三处柔光，让玻璃有东西可折射
             Circle()
-                .fill(AppColor.secondary.opacity(0.40))
-                .frame(width: 260, height: 260)
-                .blur(radius: 70)
-                .offset(x: -110, y: -70)
+                .fill(AppColor.primary.opacity(0.30))
+                .frame(width: 300, height: 300)
+                .blur(radius: 90)
+                .offset(x: -120, y: -40)
             Circle()
-                .fill(AppColor.primary.opacity(0.22))
-                .frame(width: 200, height: 200)
-                .blur(radius: 80)
-                .offset(x: 130, y: 10)
+                .fill(AppColor.secondary.opacity(0.50))
+                .frame(width: 280, height: 280)
+                .blur(radius: 90)
+                .offset(x: 140, y: 120)
+            Circle()
+                .fill(AppColor.secondary.opacity(0.35))
+                .frame(width: 340, height: 340)
+                .blur(radius: 110)
+                .offset(x: -80, y: 520)
         }
         .ignoresSafeArea()
     }

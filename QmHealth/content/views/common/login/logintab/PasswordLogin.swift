@@ -75,16 +75,10 @@ struct PasswordLogin: View {
                 Button {
                     login()
                 } label: {
-                    HStack(spacing: AppSpacing.compact) {
-                        if loginHandleIn {
-                            ProgressView().tint(.white)
-                        }
-                        Text("登录")
-                    }
+                    Text("登录")
                 }
-                .buttonStyle(PrimaryActionButtonStyle())
+                .buttonStyle(ProcessingActionButtonStyle(isLoading: loginHandleIn))
                 .disabled(loginButtonIsDisable())
-                .opacity(loginButtonIsDisable() ? 0.5 : 1.0)
                 .padding(.horizontal, AppSpacing.screen)
                 .padding(.top, AppSpacing.compact)
             }

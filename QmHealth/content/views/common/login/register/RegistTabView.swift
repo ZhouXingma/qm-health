@@ -108,16 +108,10 @@ struct RegistTabView: View {
                 Button {
                     regist()
                 } label: {
-                    HStack(spacing: AppSpacing.compact) {
-                        if registHandleIn {
-                            ProgressView().tint(.white)
-                        }
-                        Text("注册")
-                    }
+                    Text("注册")
                 }
-                .buttonStyle(PrimaryActionButtonStyle())
+                .buttonStyle(ProcessingActionButtonStyle(isLoading: registHandleIn))
                 .disabled(registerButtonIsDisable())
-                .opacity(registerButtonIsDisable() ? 0.5 : 1.0)
                 .padding(.horizontal, AppSpacing.screen)
                 .padding(.top, AppSpacing.compact)
             }
