@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "3231118_lady_cartoon_woman_family_person_aunt.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}

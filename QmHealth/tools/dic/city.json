@@ -1,0 +1,412 @@
+[
+  {
+    "group": "A",
+    "city": [
+      {"name": "阿坝", "py": "aba", "pys": "ab"},
+      {"name": "阿拉善", "py": "alashan", "pys": "als"},
+      {"name": "阿里", "py": "ali", "pys": "al"},
+      {"name": "安康", "py": "ankang", "pys": "ak"},
+      {"name": "安庆", "py": "anqing", "pys": "aq"},
+      {"name": "鞍山", "py": "anshan", "pys": "as"},
+      {"name": "安顺", "py": "anshun", "pys": "as"},
+      {"name": "安阳", "py": "anyang", "pys": "ay"},
+      {"name": "澳门", "py": "aomen", "pys": "am"}
+    ]
+  },
+  {
+    "group": "B",
+    "city": [
+      {"name": "北京", "py": "beijing", "pys": "bj"},
+      {"name": "白银", "py": "baiyin", "pys": "by"},
+      {"name": "保定", "py": "baoding", "pys": "bd"},
+      {"name": "宝鸡", "py": "baoji", "pys": "bj"},
+      {"name": "保山", "py": "baoshan", "pys": "bs"},
+      {"name": "包头", "py": "baotou", "pys": "bt"},
+      {"name": "巴中", "py": "bazhong", "pys": "bz"},
+      {"name": "北海", "py": "beihai", "pys": "bh"},
+      {"name": "蚌埠", "py": "bengbu", "pys": "bb"},
+      {"name": "本溪", "py": "benxi", "pys": "bx"},
+      {"name": "毕节", "py": "bijie", "pys": "bj"},
+      {"name": "滨州", "py": "binzhou", "pys": "bz"},
+      {"name": "百色", "py": "baise", "pys": "bs"},
+      {"name": "亳州", "py": "bozhou", "pys": "bz"}
+    ]
+  },
+  {
+    "group": "C",
+    "city": [
+      {"name": "重庆", "py": "chongqing", "pys": "cq"},
+      {"name": "成都", "py": "chengdu", "pys": "cd"},
+      {"name": "长沙", "py": "changsha", "pys": "cs"},
+      {"name": "长春", "py": "changchun", "pys": "cc"},
+      {"name": "沧州", "py": "cangzhou", "pys": "cz"},
+      {"name": "常德", "py": "changde", "pys": "cd"},
+      {"name": "昌都", "py": "changdu", "pys": "cd"},
+      {"name": "长治", "py": "changzhi", "pys": "cz"},
+      {"name": "常州", "py": "changzhou", "pys": "cz"},
+      {"name": "巢湖", "py": "chaohu", "pys": "ch"},
+      {"name": "潮州", "py": "chaozhou", "pys": "cz"},
+      {"name": "承德", "py": "chengde", "pys": "cd"},
+      {"name": "郴州", "py": "chenzhou", "pys": "cz"},
+      {"name": "赤峰", "py": "chifeng", "pys": "cf"},
+      {"name": "池州", "py": "chizhou", "pys": "cz"},
+      {"name": "崇左", "py": "chongzuo", "pys": "cz"},
+      {"name": "楚雄", "py": "chuxiong", "pys": "cx"},
+      {"name": "滁州", "py": "chuzhou", "pys": "cz"},
+      {"name": "朝阳", "py": "chaoyang", "pys": "cy"}
+    ]
+  },
+  {
+    "group": "D",
+    "city": [
+      {"name": "大连", "py": "dalian", "pys": "dl"},
+      {"name": "东莞", "py": "dongguan", "pys": "dg"},
+      {"name": "大理", "py": "dali", "pys": "dl"},
+      {"name": "丹东", "py": "dandong", "pys": "dd"},
+      {"name": "大庆", "py": "daqing", "pys": "dq"},
+      {"name": "大同", "py": "datong", "pys": "dt"},
+      {"name": "大兴安岭", "py": "daxinganling", "pys": "dxal"},
+      {"name": "德宏", "py": "dehong", "pys": "dh"},
+      {"name": "德阳", "py": "deyang", "pys": "dy"},
+      {"name": "德州", "py": "dezhou", "pys": "dz"},
+      {"name": "定西", "py": "dingxi", "pys": "dx"},
+      {"name": "迪庆", "py": "diqing", "pys": "dq"},
+      {"name": "东营", "py": "dongying", "pys": "dy"}
+    ]
+  },
+  {
+    "group": "E",
+    "city": [
+      {"name": "鄂尔多斯", "py": "eerduosi", "pys": "eeds"},
+      {"name": "恩施", "py": "enshi", "pys": "es"},
+      {"name": "鄂州", "py": "ezhou", "pys": "ez"}
+    ]
+  },
+  {
+    "group": "F",
+    "city": [
+      {"name": "福州", "py": "fuzhou", "pys": "fz"},
+      {"name": "防城港", "py": "fangchenggang", "pys": "fcg"},
+      {"name": "佛山", "py": "foshan", "pys": "fs"},
+      {"name": "抚顺", "py": "fushun", "pys": "fs"},
+      {"name": "抚州", "py": "fuzhou", "pys": "fz"},
+      {"name": "阜新", "py": "fuxin", "pys": "fx"},
+      {"name": "阜阳", "py": "fuyang", "pys": "fy"}
+    ]
+  },
+  {
+    "group": "G",
+    "city": [
+      {"name": "广州", "py": "guangzhou", "pys": "gz"},
+      {"name": "贵阳", "py": "guiyang", "pys": "gy"},
+      {"name": "甘南", "py": "gannan", "pys": "gn"},
+      {"name": "赣州", "py": "ganzhou", "pys": "gz"},
+      {"name": "甘孜", "py": "ganzi", "pys": "gz"},
+      {"name": "广安", "py": "guangan", "pys": "ga"},
+      {"name": "广元", "py": "guangyuan", "pys": "gy"},
+      {"name": "桂林", "py": "guilin", "pys": "gl"},
+      {"name": "贵港", "py": "guigang", "pys": "gg"},
+      {"name": "固原", "py": "guyuan", "pys": "gy"},
+      {"name": "果洛", "py": "guoluo", "pys": "gl"}
+    ]
+  },
+  {
+    "group": "H",
+    "city": [
+      {"name": "杭州", "py": "hangzhou", "pys": "hz"},
+      {"name": "哈尔滨", "py": "haerbin", "pys": "heb"},
+      {"name": "海口", "py": "haikou", "pys": "hk"},
+      {"name": "合肥", "py": "hefei", "pys": "hf"},
+      {"name": "呼和浩特", "py": "huhehaote", "pys": "hhht"},
+      {"name": "海东", "py": "haidong", "pys": "hd"},
+      {"name": "怀化", "py": "huaihua", "pys": "hh"},
+      {"name": "惠州", "py": "huizhou", "pys": "hz"},
+      {"name": "湖州", "py": "huzhou", "pys": "hz"},
+      {"name": "衡水", "py": "hengshui", "pys": "hs"},
+      {"name": "哈密", "py": "hami", "pys": "hm"},
+      {"name": "汉中", "py": "hanzhong", "pys": "hz"},
+      {"name": "河池", "py": "hechi", "pys": "hc"},
+      {"name": "鹤壁", "py": "hebi", "pys": "hb"},
+      {"name": "鹤岗", "py": "hegang", "pys": "hg"},
+      {"name": "黑河", "py": "heihe", "pys": "hh"},
+      {"name": "和田", "py": "hetian", "pys": "ht"},
+      {"name": "菏泽", "py": "heze", "pys": "hz"},
+      {"name": "红河", "py": "honghe", "pys": "hh"},
+      {"name": "淮安", "py": "huaian", "pys": "ha"},
+      {"name": "淮北", "py": "huaibei", "pys": "hb"},
+      {"name": "淮南", "py": "huainan", "pys": "hn"},
+      {"name": "黄冈", "py": "huanggang", "pys": "hg"},
+      {"name": "黄山", "py": "huangshan", "pys": "hs"},
+      {"name": "黄石", "py": "huangshi", "pys": "hs"}
+    ]
+  },
+  {
+    "group": "J",
+    "city": [
+      {"name": "晋城", "py": "jincheng", "pys": "jc"},
+      {"name": "晋中", "py": "jinzhong", "pys": "jz"},
+      {"name": "锦州", "py": "jinzhou", "pys": "jz"},
+      {"name": "景德镇", "py": "jingdezhen", "pys": "jdz"},
+      {"name": "荆门", "py": "jingmen", "pys": "jm"},
+      {"name": "荆州", "py": "jingzhou", "pys": "jz"},
+      {"name": "吉安", "py": "jian", "pys": "ja"},
+      {"name": "吉林", "py": "jilin", "pys": "jl"},
+      {"name": "济南", "py": "jinan", "pys": "jn"},
+      {"name": "佳木斯", "py": "jiamusi", "pys": "jms"},
+      {"name": "嘉兴", "py": "jiaxing", "pys": "jx"},
+      {"name": "嘉峪关", "py": "jiayuguan", "pys": "jyg"},
+      {"name": "揭阳", "py": "jieyang", "pys": "jy"},
+      {"name": "金昌", "py": "jinchang", "pys": "jc"},
+      {"name": "金华", "py": "jinhua", "pys": "jh"},
+      {"name": "酒泉", "py": "jiuquan", "pys": "jq"},
+      {"name": "九江", "py": "jiujiang", "pys": "jj"},
+      {"name": "济宁", "py": "jining", "pys": "jn"}
+    ]
+  },
+  {
+    "group": "K",
+    "city": [
+      {"name": "昆明", "py": "kunming", "pys": "km"},
+      {"name": "开封", "py": "kaifeng", "pys": "kf"},
+      {"name": "喀什", "py": "kashgar", "pys": "ks"},
+      {"name": "克拉玛依", "py": "kelamayi", "pys": "klmy"},
+      {"name": "库尔勒", "py": "kuerle", "pys": "kel"},
+      {"name": "克孜勒苏", "py": "kezilesu", "pys": "kzls"},
+      {"name": "昆玉", "py": "kunyu", "pys": "ky"}
+    ]
+  },
+  {
+    "group": "L",
+    "city": [
+      {"name": "拉萨", "py": "lasa", "pys": "ls"},
+      {"name": "兰州", "py": "lanzhou", "pys": "lz"},
+      {"name": "廊坊", "py": "langfang", "pys": "lf"},
+      {"name": "乐山", "py": "leshan", "pys": "ls"},
+      {"name": "丽江", "py": "lijiang", "pys": "lj"},
+      {"name": "丽水", "py": "lishui", "pys": "ls"},
+      {"name": "连云港", "py": "lianyungang", "pys": "lyg"},
+      {"name": "辽阳", "py": "liaoyang", "pys": "ly"},
+      {"name": "聊城", "py": "liaocheng", "pys": "lc"},
+      {"name": "临沧", "py": "lincang", "pys": "lc"},
+      {"name": "临汾", "py": "linfen", "pys": "lf"},
+      {"name": "临沂", "py": "linyi", "pys": "ly"},
+      {"name": "林芝", "py": "linzhi", "pys": "lz"},
+      {"name": "六安", "py": "liuan", "pys": "la"},
+      {"name": "六盘水", "py": "liupanshui", "pys": "lps"},
+      {"name": "柳州", "py": "liuzhou", "pys": "lz"},
+      {"name": "陇南", "py": "longnan", "pys": "ln"},
+      {"name": "龙岩", "py": "longyan", "pys": "ly"},
+      {"name": "娄底", "py": "loudi", "pys": "ld"},
+      {"name": "泸州", "py": "luzhou", "pys": "lz"},
+      {"name": "洛阳", "py": "luoyang", "pys": "ly"},
+      {"name": "吕梁", "py": "lvliang", "pys": "ll"}
+    ]
+  },
+  {
+    "group": "M",
+    "city": [
+      {"name": "马鞍山", "py": "maanshan", "pys": "mas"},
+      {"name": "茂名", "py": "maoming", "pys": "mm"},
+      {"name": "眉山", "py": "meishan", "pys": "ms"},
+      {"name": "梅州", "py": "meizhou", "pys": "mz"},
+      {"name": "绵阳", "py": "mianyang", "pys": "my"},
+      {"name": "牡丹江", "py": "mudanjiang", "pys": "mdj"}
+    ]
+  },
+  {
+    "group": "N",
+    "city": [
+      {"name": "南昌", "py": "nanchang", "pys": "nc"},
+      {"name": "南京", "py": "nanjing", "pys": "nj"},
+      {"name": "南宁", "py": "nanning", "pys": "nn"},
+      {"name": "南通", "py": "nantong", "pys": "nt"},
+      {"name": "南阳", "py": "nanyang", "pys": "ny"},
+      {"name": "那曲", "py": "naqu", "pys": "nq"},
+      {"name": "内江", "py": "neijiang", "pys": "nj"},
+      {"name": "宁波", "py": "ningbo", "pys": "nb"},
+      {"name": "宁德", "py": "ningde", "pys": "nd"},
+      {"name": "怒江", "py": "nujiang", "pys": "nj"}
+    ]
+  },
+  {
+    "group": "P",
+    "city": [
+      {"name": "平顶山", "py": "pingdingshan", "pys": "pds"},
+      {"name": "盘锦", "py": "panjin", "pys": "pj"},
+      {"name": "攀枝花", "py": "panzhihua", "pys": "pzh"},
+      {"name": "莆田", "py": "putian", "pys": "pt"},
+      {"name": "萍乡", "py": "pingxiang", "pys": "px"},
+      {"name": "普洱", "py": "puer", "pys": "pe"},
+      {"name": "普陀", "py": "putuo", "pys": "pt"},
+      {"name": "濮阳", "py": "puyang", "pys": "py"}
+    ]
+  },
+  {
+    "group": "Q",
+    "city": [
+      {"name": "青岛", "py": "qingdao", "pys": "qd"},
+      {"name": "清远", "py": "qingyuan", "pys": "qy"},
+      {"name": "庆阳", "py": "qingyang", "pys": "qy"},
+      {"name": "泉州", "py": "quanzhou", "pys": "qz"},
+      {"name": "曲靖", "py": "qujing", "pys": "qj"},
+      {"name": "衢州", "py": "quzhou", "pys": "qz"},
+      {"name": "黔东南", "py": "qiandongnan", "pys": "qdn"},
+      {"name": "黔南", "py": "qiannan", "pys": "qn"},
+      {"name": "黔西南", "py": "qianxinan", "pys": "qxn"},
+      {"name": "秦皇岛", "py": "qinhuangdao", "pys": "qhd"},
+      {"name": "钦州", "py": "qinzhou", "pys": "qz"},
+      {"name": "齐齐哈尔", "py": "qiqihaer", "pys": "qqhe"},
+      {"name": "七台河", "py": "qitaihe", "pys": "qth"},
+      {"name": "潜江", "py": "qianjiang", "pys": "qj"},
+      {"name": "琼海", "py": "qionghai", "pys": "qh"},
+      {"name": "琼中", "py": "qiongzhong", "pys": "qz"}
+    ]
+  },
+  {
+    "group": "R",
+    "city": [
+      {"name": "日喀则", "py": "rikaze", "pys": "rkz"},
+      {"name": "日照", "py": "rizhao", "pys": "rz"},
+      {"name": "瑞金", "py": "ruijin", "pys": "rj"}
+    ]
+  },
+  {
+    "group": "S",
+    "city": [
+      {"name": "上海", "py": "shanghai", "pys": "sh"},
+      {"name": "深圳", "py": "shenzhen", "pys": "sz"},
+      {"name": "沈阳", "py": "shenyang", "pys": "sy"},
+      {"name": "石家庄", "py": "shijiazhuang", "pys": "sjz"},
+      {"name": "苏州", "py": "suzhou", "pys": "sz"},
+      {"name": "汕头", "py": "shantou", "pys": "st"},
+      {"name": "汕尾", "py": "shanwei", "pys": "sw"},
+      {"name": "商洛", "py": "shangluo", "pys": "sl"},
+      {"name": "商丘", "py": "shangqiu", "pys": "sq"},
+      {"name": "上饶", "py": "shangrao", "pys": "sr"},
+      {"name": "三门峡", "py": "sanmenxia", "pys": "smx"},
+      {"name": "三明", "py": "sanming", "pys": "sm"},
+      {"name": "三亚", "py": "sanya", "pys": "sy"},
+      {"name": "厦门", "py": "xiamen", "pys": "xm"},
+      {"name": "绍兴", "py": "shaoxing", "pys": "sx"},
+      {"name": "韶关", "py": "shaoguan", "pys": "sg"},
+      {"name": "邵阳", "py": "shaoyang", "pys": "sy"},
+      {"name": "十堰", "py": "shiyan", "pys": "sy"},
+      {"name": "朔州", "py": "shuozhou", "pys": "sz"},
+      {"name": "四平", "py": "siping", "pys": "sp"},
+      {"name": "松原", "py": "songyuan", "pys": "sy"},
+      {"name": "绥化", "py": "suihua", "pys": "sh"},
+      {"name": "遂宁", "py": "suining", "pys": "sn"},
+      {"name": "随州", "py": "suizhou", "pys": "sz"},
+      {"name": "宿迁", "py": "suqian", "pys": "sq"},
+      {"name": "宿州", "py": "suzhou", "pys": "sz"}
+    ]
+  },
+  {
+    "group": "T",
+    "city": [
+      {"name": "台北", "py": "taibei", "pys": "tb"},
+      {"name": "太原", "py": "taiyuan", "pys": "ty"},
+      {"name": "泰安", "py": "taian", "pys": "ta"},
+      {"name": "泰州", "py": "taizhou", "pys": "tz"},
+      {"name": "唐山", "py": "tangshan", "pys": "ts"},
+      {"name": "天津", "py": "tianjin", "pys": "tj"},
+      {"name": "天水", "py": "tianshui", "pys": "ts"},
+      {"name": "铁岭", "py": "tieling", "pys": "tl"},
+      {"name": "铜川", "py": "tongchuan", "pys": "tc"},
+      {"name": "通化", "py": "tonghua", "pys": "th"},
+      {"name": "通辽", "py": "tongliao", "pys": "tl"},
+      {"name": "铜陵", "py": "tongling", "pys": "tl"},
+      {"name": "铜仁", "py": "tongren", "pys": "tr"},
+      {"name": "吐鲁番", "py": "tulufan", "pys": "tlf"},
+      {"name": "屯昌", "py": "tunchang", "pys": "tc"}
+    ]
+  },
+  {
+    "group": "W",
+    "city": [
+      {"name": "潍坊", "py": "weifang", "pys": "wf"},
+      {"name": "威海", "py": "weihai", "pys": "wh"},
+      {"name": "渭南", "py": "weinan", "pys": "wn"},
+      {"name": "温州", "py": "wenzhou", "pys": "wz"},
+      {"name": "武汉", "py": "wuhan", "pys": "wh"},
+      {"name": "芜湖", "py": "wuhu", "pys": "wh"},
+      {"name": "乌兰察布", "py": "wulanchabu", "pys": "wlcb"},
+      {"name": "乌鲁木齐", "py": "wulumuqi", "pys": "wlmq"},
+      {"name": "无锡", "py": "wuxi", "pys": "wx"},
+      {"name": "吴忠", "py": "wuzhong", "pys": "wz"},
+      {"name": "梧州", "py": "wuzhou", "pys": "wz"},
+      {"name": "武威", "py": "wuwei", "pys": "ww"}
+    ]
+  },
+  {
+    "group": "X",
+    "city": [
+      {"name": "西安", "py": "xian", "pys": "xa"},
+      {"name": "西宁", "py": "xining", "pys": "xn"},
+      {"name": "襄阳", "py": "xiangyang", "pys": "xy"},
+      {"name": "湘潭", "py": "xiangtan", "pys": "xt"},
+      {"name": "湘西", "py": "xiangxi", "pys": "xx"},
+      {"name": "咸宁", "py": "xianning", "pys": "xn"},
+      {"name": "咸阳", "py": "xianyang", "pys": "xy"},
+      {"name": "孝感", "py": "xiaogan", "pys": "xg"},
+      {"name": "新乡", "py": "xinxiang", "pys": "xx"},
+      {"name": "信阳", "py": "xinyang", "pys": "xy"},
+      {"name": "忻州", "py": "xinzhou", "pys": "xz"},
+      {"name": "邢台", "py": "xingtai", "pys": "xt"},
+      {"name": "新余", "py": "xinyu", "pys": "xy"},
+      {"name": "徐州", "py": "xuzhou", "pys": "xz"},
+      {"name": "许昌", "py": "xuchang", "pys": "xc"},
+      {"name": "宣城", "py": "xuancheng", "pys": "xc"},
+      {"name": "香港", "py": "xianggang", "pys": "xg"}
+    ]
+  },
+  {
+    "group": "Y",
+    "city": [
+      {"name": "延安", "py": "yanan", "pys": "ya"},
+      {"name": "盐城", "py": "yancheng", "pys": "yc"},
+      {"name": "阳江", "py": "yangjiang", "pys": "yj"},
+      {"name": "阳泉", "py": "yangquan", "pys": "yq"},
+      {"name": "宜宾", "py": "yibin", "pys": "yb"},
+      {"name": "宜昌", "py": "yichang", "pys": "yc"},
+      {"name": "伊春", "py": "yichun", "pys": "yc"},
+      {"name": "银川", "py": "yinchuan", "pys": "yc"},
+      {"name": "营口", "py": "yingkou", "pys": "yk"},
+      {"name": "宜春", "py": "yichun", "pys": "yc"},
+      {"name": "益阳", "py": "yiyang", "pys": "yy"},
+      {"name": "永州", "py": "yongzhou", "pys": "yz"},
+      {"name": "岳阳", "py": "yueyang", "pys": "yy"},
+      {"name": "榆林", "py": "yulin", "pys": "yl"},
+      {"name": "玉林", "py": "yulin", "pys": "yl"},
+      {"name": "运城", "py": "yuncheng", "pys": "yc"},
+      {"name": "云浮", "py": "yunfu", "pys": "yf"},
+      {"name": "玉树", "py": "yushu", "pys": "ys"},
+      {"name": "玉溪", "py": "yuxi", "pys": "yx"}
+    ]
+  },
+  {
+    "group": "Z",
+    "city": [
+      {"name": "湛江", "py": "zhanjiang", "pys": "zj"},
+      {"name": "张家界", "py": "zhangjiajie", "pys": "zjj"},
+      {"name": "张家口", "py": "zhangjiakou", "pys": "zjk"},
+      {"name": "张掖", "py": "zhangye", "pys": "zy"},
+      {"name": "漳州", "py": "zhangzhou", "pys": "zz"},
+      {"name": "肇庆", "py": "zhaoqing", "pys": "zq"},
+      {"name": "昭通", "py": "zhaotong", "pys": "zt"},
+      {"name": "郑州", "py": "zhengzhou", "pys": "zz"},
+      {"name": "镇江", "py": "zhenjiang", "pys": "zj"},
+      {"name": "中山", "py": "zhongshan", "pys": "zs"},
+      {"name": "中卫", "py": "zhongwei", "pys": "zw"},
+      {"name": "周口", "py": "zhoukou", "pys": "zk"},
+      {"name": "舟山", "py": "zhoushan", "pys": "zs"},
+      {"name": "珠海", "py": "zhuhai", "pys": "zh"},
+      {"name": "驻马店", "py": "zhumadian", "pys": "zmd"},
+      {"name": "株洲", "py": "zhuzhou", "pys": "zz"},
+      {"name": "淄博", "py": "zibo", "pys": "zb"},
+      {"name": "自贡", "py": "zigong", "pys": "zg"},
+      {"name": "资阳", "py": "ziyang", "pys": "zy"},
+      {"name": "遵义", "py": "zunyi", "pys": "zy"}
+    ]
+  }
+]

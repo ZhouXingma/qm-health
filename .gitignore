@@ -1,0 +1,81 @@
+# ============================================
+# 个人 / 本地信息，不要上传
+# ============================================
+
+# 编辑器与工具的个人配置
+.idea/
+.kiro/
+.vscode/
+.claude/
+
+# Xcode：用户数据（含本机用户名、断点、界面状态、打开过的文件路径）
+xcuserdata/
+*.xcuserstate
+*.xcbkptlist
+*.xcscmblueprint
+*.xccheckout
+
+# 本地签名 / 团队 / 账号配置（个人 Apple 开发者信息）
+Local.xcconfig
+*.local.xcconfig
+Secrets.xcconfig
+*.mobileprovision
+*.p12
+*.cer
+*.certSigningRequest
+
+# 密钥与环境变量
+.env
+.env.*
+*.env
+
+# 本地数据与日志
+*.log
+*.sqlite
+*.sqlite3
+*.db
+
+# ============================================
+# 系统文件
+# ============================================
+.DS_Store
+.AppleDouble
+.LSOverride
+.Trashes
+._*
+
+# ============================================
+# Xcode 构建产物
+# ============================================
+/QmHealth.xcodeproj/xcuserdata/
+/QmHealth.xcodeproj/project.xcworkspace/xcuserdata/
+build/
+DerivedData/
+
+## Various settings
+*.pbxuser
+!default.pbxuser
+*.mode1v3
+!default.mode1v3
+*.mode2v3
+!default.mode2v3
+*.perspectivev3
+!default.perspectivev3
+
+## Obj-C/Swift specific
+*.hmap
+
+## App packaging
+*.ipa
+*.dSYM.zip
+*.dSYM
+
+## Playgrounds
+timeline.xctimeline
+playground.xcworkspace
+
+# Swift Package Manager
+.swiftpm
+Packages
+Package.resolved
+.xcode-docgeneration-setting

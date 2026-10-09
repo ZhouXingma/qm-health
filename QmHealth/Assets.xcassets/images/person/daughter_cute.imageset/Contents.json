@@ -1,0 +1,21 @@
+{
+  "images" : [
+    {
+      "filename" : "3231126_kid_cartoon_baby_family_daughter_cute.png",
+      "idiom" : "universal",
+      "scale" : "1x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "2x"
+    },
+    {
+      "idiom" : "universal",
+      "scale" : "3x"
+    }
+  ],
+  "info" : {
+    "author" : "xcode",
+    "version" : 1
+  }
+}
