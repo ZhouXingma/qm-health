@@ -4,6 +4,87 @@
 
 ---
 
+## 应用截图
+
+> 截图取自运行中的应用，按功能模块分组展示，原图见 [`doc/screenshots/`](doc/screenshots)。
+
+### 登录与首页
+
+<table>
+<tr>
+<td align="center"><img src="doc/screenshots/登录.png" width="250"><br><sub>登录 / 注册</sub></td>
+<td align="center"><img src="doc/screenshots/首页.png" width="250"><br><sub>首页（档案概览 / 任务 / 曲线入口）</sub></td>
+</tr>
+</table>
+
+### AI 问诊
+
+<table>
+<tr>
+<td align="center"><img src="doc/screenshots/AI.png" width="250"><br><sub>AI 入口</sub></td>
+<td align="center"><img src="doc/screenshots/AI问答.png" width="250"><br><sub>流式问答 / 推理与工具调用</sub></td>
+</tr>
+</table>
+
+### 健康曲线与指标
+
+<table>
+<tr>
+<td align="center"><img src="doc/screenshots/健康曲线-总览.png" width="250"><br><sub>健康曲线总览</sub></td>
+<td align="center"><img src="doc/screenshots/健康曲线-计划.png" width="250"><br><sub>健康计划</sub></td>
+<td align="center"><img src="doc/screenshots/健康曲线-AI指定健康计划.png" width="250"><br><sub>AI 生成健康计划</sub></td>
+</tr>
+<tr>
+<td align="center"><img src="doc/screenshots/健康指标.png" width="250"><br><sub>健康指标列表</sub></td>
+<td align="center"><img src="doc/screenshots/健康指标-血压.png" width="250"><br><sub>指标详情（血压）</sub></td>
+<td align="center"><img src="doc/screenshots/饮水记录.png" width="250"><br><sub>饮水打卡</sub></td>
+</tr>
+</table>
+
+### 每日任务
+
+<table>
+<tr>
+<td align="center"><img src="doc/screenshots/个人任务-今日任务.png" width="250"><br><sub>今日任务</sub></td>
+<td align="center"><img src="doc/screenshots/个人任务-任务统计.png" width="250"><br><sub>任务统计</sub></td>
+</tr>
+</table>
+
+### 就诊记录
+
+<table>
+<tr>
+<td align="center"><img src="doc/screenshots/就诊记录-列表.png" width="250"><br><sub>就诊记录列表</sub></td>
+<td align="center"><img src="doc/screenshots/就诊记录编辑.png" width="250"><br><sub>新建 / 编辑就诊记录</sub></td>
+</tr>
+</table>
+
+### 用药管理
+
+<table>
+<tr>
+<td align="center"><img src="doc/screenshots/用药记录-列表.png" width="250"><br><sub>用药记录</sub></td>
+<td align="center"><img src="doc/screenshots/用药记录-添加记录.png" width="250"><br><sub>添加用药记录</sub></td>
+<td align="center"><img src="doc/screenshots/用药计划-列表.png" width="250"><br><sub>用药计划</sub></td>
+</tr>
+</table>
+
+### 个人中心与健康档案
+
+<table>
+<tr>
+<td align="center"><img src="doc/screenshots/个人中心-基本信息.png" width="250"><br><sub>基本信息</sub></td>
+<td align="center"><img src="doc/screenshots/个人中心-疾病管理.png" width="250"><br><sub>疾病管理</sub></td>
+<td align="center"><img src="doc/screenshots/个人中心-过敏源.png" width="250"><br><sub>过敏源</sub></td>
+</tr>
+<tr>
+<td align="center"><img src="doc/screenshots/个人中心-家族史.png" width="250"><br><sub>家族史</sub></td>
+<td align="center"><img src="doc/screenshots/个人中心-档案信息.png" width="250"><br><sub>档案信息</sub></td>
+</tr>
+</table>
+
+---
+
 ## 一、项目概览
 
 | 项目 | 说明 |
