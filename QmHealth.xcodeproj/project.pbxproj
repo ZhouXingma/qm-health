@@ -8,13 +8,11 @@
 
 /* Begin PBXBuildFile section */
 		D5BACE822F3D6D3400E0215F /* SwiftMath in Frameworks */ = {isa = PBXBuildFile; productRef = D5BACE812F3D6D3400E0215F /* SwiftMath */; };
-		D5F6C9012EE26E77002CF95D /* README 2.md in Sources */ = {isa = PBXBuildFile; fileRef = D5F6C9002EE26E6D002CF95D /* README 2.md */; };
 		D5FFB2672EC0C24A00D38A8B /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = D5FFB2662EC0C24A00D38A8B /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		D5E2AB132D6AF0FE00802168 /* QmHealth.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = QmHealth.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		D5F6C9002EE26E6D002CF95D /* README 2.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = "README 2.md"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -64,7 +62,6 @@
 				D5E2AB152D6AF0FE00802168 /* QmHealth */,
 				D5965B922E9674FD0077CED5 /* Frameworks */,
 				D5E2AB142D6AF0FE00802168 /* Products */,
-				D5F6C9002EE26E6D002CF95D /* README 2.md */,
 			);
 			sourceTree = "<group>";
 		};
@@ -157,7 +154,6 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D5F6C9012EE26E77002CF95D /* README 2.md in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -303,7 +299,10 @@
 				INFOPLIST_FILE = QmHealth/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "青木健康";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "需要访问相机以拍摄照片";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "我们需要访问麦克风以录制语音";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "需要访问相册以保存拍摄的照片";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "需要访问相册以选择照片";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "我们需要访问您的语音以进行识别";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -337,7 +336,10 @@
 				INFOPLIST_FILE = QmHealth/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "青木健康";
 				INFOPLIST_KEY_LSSupportsOpeningDocumentsInPlace = YES;
+				INFOPLIST_KEY_NSCameraUsageDescription = "需要访问相机以拍摄照片";
 				INFOPLIST_KEY_NSMicrophoneUsageDescription = "我们需要访问麦克风以录制语音";
+				INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription = "需要访问相册以保存拍摄的照片";
+				INFOPLIST_KEY_NSPhotoLibraryUsageDescription = "需要访问相册以选择照片";
 				INFOPLIST_KEY_NSSpeechRecognitionUsageDescription = "我们需要访问您的语音以进行识别";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
