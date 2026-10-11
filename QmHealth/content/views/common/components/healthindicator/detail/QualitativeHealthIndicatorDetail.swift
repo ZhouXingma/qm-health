@@ -319,11 +319,16 @@ struct QualitativeHealthIndicatorRecord : View {
                 Spacer()
                 
                 // Right Section - Qualitative Value
-                HStack(spacing: 6) {
-                    HealthIndicatorStatusBadge(indicatorStatus: healthIndicator.indicatorStatus)
-                    Text(healthIndicator.indicatorValue ?? "")
-                        .font(.system(size: 18, weight: .bold))
-                        .foregroundColor(Color.theme(.primary))
+                VStack(alignment: .trailing, spacing: 4) {
+                    HStack(spacing: 6) {
+                        HealthIndicatorStatusBadge(indicatorStatus: healthIndicator.indicatorStatus)
+                        Text(healthIndicator.indicatorValue ?? "")
+                            .font(.system(size: 18, weight: .bold))
+                            .foregroundColor(Color.theme(.primary))
+                    }
+
+                    // 参考范围
+                    HealthIndicatorReferenceRange(referenceRange: healthIndicator.referenceRange)
                 }
             }
             .padding(.vertical, 14)

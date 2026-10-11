@@ -314,7 +314,7 @@ struct NormalHealthIndicatorDetail: View {
                     self.isLoadingMore = false
                     return;
                 }
-                
+
                 var pointDatasTemp:[ScrollChartDataPoint] = []
                 var recordsTemp: [UsersHealthIndicatorDTO] = []
                 
@@ -425,13 +425,16 @@ struct HealthIndicatorRecord : View {
                         Text("\(healthIndicator.indicatorValue ?? "")")
                             .font(.system(size: 20, weight: .bold))
                             .foregroundColor(Color.theme(.primary))
-                        
+
                         if let unit_str = unit {
                             Text(unit_str)
                                 .font(.system(size: 12, weight: .semibold))
                                 .foregroundColor(.secondary)
                         }
                     }
+
+                    // 参考范围
+                    HealthIndicatorReferenceRange(referenceRange: healthIndicator.referenceRange)
                 }
             }
             .padding(.vertical, 14)

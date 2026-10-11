@@ -975,6 +975,7 @@ struct OcrRecognizeView: View {
                 hospitalName: hospitalName,
                 measureTime: reportMeasureTimes[item.reportIndex] ?? Date(),
                 fileId: fileIds,
+                label: 2, // 2 = OCR 录入
                 otherDesc: item.tag.isEmpty ? nil : item.tag
             ))
         }

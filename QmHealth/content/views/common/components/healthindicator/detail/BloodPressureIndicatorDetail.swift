@@ -567,6 +567,9 @@ struct BloodPressureRecord : View {
                                 .foregroundColor(.secondary)
                         }
                     }
+
+                    // 参考范围
+                    HealthIndicatorReferenceRange(referenceRange: healthIndicator.referenceRange)
                 }
             }
             .padding(.vertical, 14)

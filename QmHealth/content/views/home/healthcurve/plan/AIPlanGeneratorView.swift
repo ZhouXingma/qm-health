@@ -898,7 +898,7 @@ struct RegenerateInputSheet: View {
                 // 输入框
                 TextEditor(text: $prompt)
                     .frame(height: 120)
-                    .inputFieldStyle()
+                    .appGlass(.clear, in: RoundedRectangle(cornerRadius: 10))
                     .padding(.horizontal, 16)
                 
                 Spacer()

@@ -297,6 +297,9 @@ struct DescriptiveHealthIndicatorRecord : View {
                     Text("\(DateUtils.formatDate(healthIndicator.measureTime!, format: DateUtils.DateFormat.ymdhms))")
                         .font(.system(size: 12, weight: .regular))
                         .foregroundColor(.secondary)
+
+                    // 参考范围
+                    HealthIndicatorReferenceRange(referenceRange: healthIndicator.referenceRange)
                 }
                 
                 Spacer()
