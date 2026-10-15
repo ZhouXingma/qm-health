@@ -50,6 +50,14 @@ struct AiChatMain: View {
     @State private var pendingConfirmations: [PendingToolConfirmation] = []
     @State private var isSubmittingConfirmation: Bool = false
 
+    // 机制 B（ask_user 信息收集）：当前等待用户回答的交互。
+    // 待回答的表单不再内联在消息流中，而是取代底部输入框展示（AskUserInputBar）。
+    // 它由 refreshPendingAskUser() 从消息流里扫描得出——消息内容的流式增量不会
+    // 让 AiChatMain 重新求值（contents 的变更由 AssistantMessageGroupModel 单独订阅），
+    // 所以必须在累积器的回调里主动扫描并写回这个 @State。
+    @State private var pendingAskUser: PendingAskUser? = nil
+    @State private var isSubmittingAskUser: Bool = false
+
     // 当前这次请求（一个 run）是否已经产生过任何可见内容（思考/工具调用/文本）。
     // 用于驱动"正在生成回复"指示器：从用户点击发送的那一刻起为 false，
     // 直到 RUN_STARTED 后的第一个内容事件到达才变 true。
@@ -255,16 +263,29 @@ struct AiChatMain: View {
                                 .animation(.spring(response: 0.35, dampingFraction: 0.85), value: pendingConfirmations)
                             }
 
-                            AiChatMainSubBar(
-                                isAIResponding: $isAIResponding,
-                                onSendMessage: { text, files, imageDatas in
-                                    sendMessage(text, files: files, imageDatas: imageDatas)
-                                },
-                                onStop: {
-                                    stopClient()
-                                }
-                            ).background(Color.clear)
-                                .padding(.horizontal, 10)
+                            // 有待回答的 ask_user 时，交互栏取代输入框展示
+                            if let pending = pendingAskUser {
+                                AskUserInputBar(
+                                    pending: pending,
+                                    isSubmitting: isSubmittingAskUser,
+                                    onSubmit: { interactiveHandle in
+                                        handleAskUserResponse(interactiveHandle)
+                                    }
+                                )
+                                // 用 toolCallId 做身份标识：流式增量刷新不会重置填写状态
+                                .id(pending.id)
+                            } else {
+                                AiChatMainSubBar(
+                                    isAIResponding: $isAIResponding,
+                                    onSendMessage: { text, files, imageDatas in
+                                        sendMessage(text, files: files, imageDatas: imageDatas)
+                                    },
+                                    onStop: {
+                                        stopClient()
+                                    }
+                                ).background(Color.clear)
+                                    .padding(.horizontal, 10)
+                            }
                         }
                         // 直接读取输入主体 VStack 自己的高度，比 PreferenceKey 在兄弟布局里更可靠
                         .onGeometryChange(for: CGFloat.self) { proxy in
@@ -272,7 +293,7 @@ struct AiChatMain: View {
                         } action: { newHeight in
                             if abs(newHeight - inputBarHeight) > 0.5 {
                                 inputBarHeight = newHeight
-                                // 输入栏高度变化（授权条出现 / 改输入框行数）后，
+                                // 输入栏高度变化（授权条出现 / 输入框换成 ask_user 交互栏）后，
                                 // 也保持粘在最后一条消息上
                                 if shouldAutoScroll, let proxy = scrollProxy {
                                     DispatchQueue.main.asyncAfter(deadline: .now() + 0.05) {
@@ -281,6 +302,7 @@ struct AiChatMain: View {
                                 }
                             }
                         }
+                        .animation(.easeInOut(duration: 0.2), value: pendingAskUser?.id)
 
                     }
                 }
@@ -328,8 +350,6 @@ struct AiChatMain: View {
         }
         .onAppear {
             handlePendingConversation()
-            // 进入页面时预加载主模型配置到 cache，避免首次 sendMessage 时 metadata 缺字段
-            MainModelConfigCache.shared.ensureLoaded()
         }
         .onChange(of: globalModel.pendingAiChatConversationId) { _, newValue in
             if let conversationId = newValue {
@@ -649,15 +669,11 @@ struct AiChatMain: View {
         }
         contentBlocks.append(contentsOf: userContentBlocks)
 
-        // 把用户在 AI 设置页选中的厂商/模型合并进 metadata，
-        // 让本地 AI 代理知道该用哪个厂商的哪个模型来路由请求。
-        let requestMetadata = Self.mergeAIVendorMetadata(existing: meta)
-
         let chatRequest = ChatRequest(
             conversationId: conversationId,
             messageId: messageId,
             contents: contentBlocks,
-            metadata: requestMetadata
+            metadata: meta
         )
         
         // 新版事件累积器：负责把 RUN_STARTED ~ RUN_FINISHED/RUN_ERROR 之间的
@@ -702,9 +718,11 @@ struct AiChatMain: View {
             if shouldAutoScroll && updatedMessage.id == messages.last?.id {
                 scrollCoordinator.request()
             }
+            refreshPendingAskUser()
         }
         accumulator.onRunFinished = { _ in
             isAIResponding = false
+            refreshPendingAskUser()
         }
         accumulator.onRunError = { _, errMsg in
             isAIResponding = false
@@ -793,6 +811,8 @@ struct AiChatMain: View {
                                 message.contents = Array(updatedContents)
                                 // 显式触发 ObservableObject 的更新通知
                                 message.objectWillChange.send()
+                                // 回填完成后待回答的 ask_user 消失，底部交互栏换成输入框
+                                self.refreshPendingAskUser()
                             }
                             break
                         }
@@ -818,28 +838,6 @@ struct AiChatMain: View {
             isAIResponding = false
             handleSendError(error)
         }
-    }
-
-    /// 把用户在 AI 设置页选中的"主模型"配置合并进请求 metadata，
-    /// 让本地 AI 代理服务（/ai/chat/completions/v1）按 vendor + model 路由请求。
-    ///
-    /// - existing: 调用方已传入的 metadata（可能是 confirmResults 等），不覆盖已有键
-    /// - 数据源：MainModelConfigCache 缓存的当前用户主模型（purpose=1 且 enabled=1）
-    /// - 缓存未加载时 fire-and-forget 触发异步加载，本次请求保持原有 metadata
-    private static func mergeAIVendorMetadata(existing: [String: AnyCodable]?) -> [String: AnyCodable]? {
-        // 首次进入时启动一次异步加载（即使本次不命中，下次 sendMessage 就有缓存了）
-        MainModelConfigCache.shared.ensureLoaded()
-        guard let cached = MainModelConfigCache.shared.current else {
-            return existing
-        }
-        var merged = existing ?? [:]
-        // 不覆盖已有键：调用方传入的 metadata 优先级更高（例如 confirmResults）
-        for (key, value) in cached {
-            if merged[key] == nil {
-                merged[key] = value
-            }
-        }
-        return merged
     }
 
     /// 用于权限确认（机制 A）恢复场景：工具调用发生在被拦截的上一个 run，
@@ -878,13 +876,62 @@ struct AiChatMain: View {
         }
     }
 
-    // 处理 ask_user 工具的用户回复
+    // 处理 ask_user 工具的用户回复（正常作答和"跳过"走同一条链路）
     private func handleAskUserResponse(_ interactiveHandle: InteractiveHandleBlockMessage) {
+        guard !isSubmittingAskUser else { return }
+        isSubmittingAskUser = true
         // 复用 sendMessage 方法，不显示用户消息，只发送交互处理块
         sendMessage(
             showUserMessage: false,
             interactiveHandle: interactiveHandle
         )
+        // sendMessage 在 AI 仍在响应中时会直接丢弃这次提交（方法首行的 guard），
+        // 此时不能停在"提交中"，否则交互栏会一直禁用。
+        // 提交成功时 sendMessage 已把 isAIResponding 置为 true。
+        if !isAIResponding {
+            isSubmittingAskUser = false
+        }
+    }
+
+    /// 扫描消息流，找出"最后出现的、result 仍为空的 ask_user 工具调用"作为待回答问题。
+    ///
+    /// 为什么需要主动扫描：`messages` 里每条消息的 contents 是流式增量的，
+    /// 但内容变更只通知到消息组自己的 AssistantMessageGroupModel，
+    /// AiChatMain 的 body 不会因此重新求值。所以在累积器的回调里调用本方法，
+    /// 把结果写进 @State 才能真正驱动底部交互栏的出现/消失。
+    private func refreshPendingAskUser() {
+        var found: PendingAskUser? = nil
+
+        scan: for message in messages.reversed() {
+            guard message.role == .assistant else { continue }
+            for content in message.contents.reversed() {
+                guard case .toolUse(let block) = content, block.isAskUserTool else { continue }
+
+                // 只关心最后出现的那个 ask_user：它已作答就说明没有待回答的表单
+                if let result = block.result, !result.isEmpty, result != "null" {
+                    found = nil
+                } else if let parsed = block.parseAsAskUserInput() {
+                    found = PendingAskUser(
+                        messageId: message.messageId,
+                        toolUse: block,
+                        input: parsed
+                    )
+                }
+                break scan
+            }
+        }
+
+        // 只在真正变化时写回。同一个 toolCallId 下 input 是稳定的，
+        // 用 id 判等即可；@State 重复赋同一个值也会让 body 重新求值，
+        // 流式场景下等于每个 delta 重建一次完整消息列表。
+        if pendingAskUser?.id != found?.id {
+            pendingAskUser = found
+            // 表单消失（作答回填完成 / 切换会话）后解除提交中状态，
+            // 否则下一次出现 ask_user 时交互栏会一直是禁用态
+            if found == nil {
+                isSubmittingAskUser = false
+            }
+        }
     }
 
     // MARK: - 机制 A：权限确认（Permission ASK）
@@ -988,8 +1035,11 @@ struct AiChatMain: View {
     // 处理错误
     private func handleError(_ error: Error, for message: DisplayChatMessage?) {
         print("AI 响应错误：\(error)")
-        
+
         isAIResponding = false
+        // 提交失败时解除禁用，让用户可以对同一个 ask_user 表单重新作答
+        isSubmittingAskUser = false
+        isSubmittingConfirmation = false
         
         // 更新消息状态
         if let message = message {
@@ -1042,7 +1092,11 @@ struct AiChatMain: View {
     // 处理发送错误
     private func handleSendError(_ error: Error) {
         print("发送消息错误：\(error)")
-        
+
+        // 提交 ask_user 表单时发送失败，解除禁用让用户重试
+        isSubmittingAskUser = false
+        isSubmittingConfirmation = false
+
         let nsError = error as NSError
         if nsError.domain == NSURLErrorDomain {
             switch nsError.code {
@@ -1086,6 +1140,7 @@ struct AiChatMain: View {
         isAIResponding = false
         errorMessage = nil
         showErrorAlert = false
+        refreshPendingAskUser()
     }
     
     /// 处理从消息通知跳转过来的待加载会话
@@ -1174,6 +1229,9 @@ struct AiChatMain: View {
                 messages = loadedMessages
                 isLoadingHistory = false
 
+                // 历史里可能有上一轮没答完的 ask_user，需要重新弹到底部交互栏
+                refreshPendingAskUser()
+
                 // 历史填充完成后，再启动恢复流，避免恢复流的增量消息被历史加载覆盖。
                 // 恢复接口返回的已完成流（仅 RUN_FINISHED）由累积器内部忽略，无需额外处理。
                 resumeConversation(conversationId: conversationId)
@@ -1224,9 +1282,11 @@ struct AiChatMain: View {
             if self.shouldAutoScroll && updatedMessage.id == self.messages.last?.id {
                 self.scrollCoordinator.request()
             }
+            self.refreshPendingAskUser()
         }
         accumulator.onRunFinished = { _ in
             self.isAIResponding = false
+            self.refreshPendingAskUser()
         }
         accumulator.onRunError = { _, errMsg in
             self.isAIResponding = false
@@ -1812,77 +1872,4 @@ struct ChatAutoScroller: View {
     @Previewable @State var selection:Int = 0
     AiChatMain(selection: $selection)
         .environmentObject(GlobalModel.shared)
-}
-
-// MARK: - 主模型配置缓存
-
-/// 缓存当前登录用户的"主模型"配置（purpose=1 且 enabled=1）。
-///
-/// 设计要点：
-/// - 单进程内单例，所有 AiChatMain 实例共享
-/// - 首次访问时异步拉取一次，成功后写入缓存
-/// - 提供 invalidate() 方法，配置页保存后调用以强制下次重新拉取
-final class MainModelConfigCache {
-    static let shared = MainModelConfigCache()
-    private init() {}
-
-    /// 当前主模型的 metadata 注入项。nil 表示未配置或未加载完成。
-    private(set) var current: [String: AnyCodable]?
-
-    /// 是否已尝试过首次加载（成功或失败都算）
-    private var hasLoadedOnce: Bool = false
-
-    /// 正在加载中时，避免重复发请求
-    private var isLoading: Bool = false
-
-    /// 触发首次加载（幂等）。已加载过则直接返回。
-    func ensureLoaded() {
-        if hasLoadedOnce || isLoading { return }
-        isLoading = true
-        UsersModelConfigApi.list(
-            completion: { list in
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.hasLoadedOnce = true
-                    self.applyList(list)
-                }
-            },
-            errorHandle: { _, _ in
-                DispatchQueue.main.async {
-                    self.isLoading = false
-                    self.hasLoadedOnce = true
-                    // 加载失败不写入缓存，下次 ensureLoaded 仍会触发
-                    self.current = nil
-                }
-            }
-        )
-    }
-
-    /// 强制刷新（配置页保存后调用）
-    func invalidate() {
-        hasLoadedOnce = false
-        current = nil
-        ensureLoaded()
-    }
-
-    private func applyList(_ list: [UsersModelConfigDTO]) {
-        // 选 purpose=1（主模型）且 enabled=1 的第一条
-        let main = list.first { dto in
-            dto.purpose == AIModelPurpose.main.rawValue && dto.isEnabled
-        }
-        guard let main = main,
-              let type = main.modelType, !type.isEmpty,
-              let name = main.modelName, !name.isEmpty else {
-            current = nil
-            return
-        }
-        var dict: [String: AnyCodable] = [
-            "vendor": AnyCodable(type),
-            "model": AnyCodable(name)
-        ]
-        if main.isMultimodalFlag {
-            dict["multimodal"] = AnyCodable(true)
-        }
-        current = dict
-    }
 }

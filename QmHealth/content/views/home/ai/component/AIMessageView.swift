@@ -85,19 +85,12 @@ struct AIMessageContentView: View {
                     )
                     
                 case .askUser(let toolUseBlock):
-                    // ask_user 工具特殊处理：根据 result 字段判断用户是否已回复
-                    // result 为空、为 "null" 或不存在时，显示交互表单
-                    // result 有有效内容时，显示用户的回复
+                    // ask_user 工具特殊处理：根据 result 字段判断用户是否已回复。
+                    // 已回复（result 有有效内容）的消息流里显示用户的回复；
+                    // 待回答的表单不再内联展示，而是取代底部输入框弹出（AskUserInputBar），
+                    // 作答完成后本分支就会以"已回复"的样式出现在原来的位置。
                     if let result = toolUseBlock.result, !result.isEmpty, result != "null" {
-                        // 已有结果（用户已回复），显示用户的回复
                         AIAskUserResponseView(toolUse: toolUseBlock, result: result)
-                    } else {
-                        // 否则显示交互表单
-                        AIAskUserMessageView(
-                            messageId: messageId,
-                            toolUse: toolUseBlock,
-                            onSubmit: onAskUserResponse
-                        )
                     }
                 }
             }

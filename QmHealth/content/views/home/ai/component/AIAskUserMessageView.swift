@@ -394,37 +394,29 @@ struct TextInputField: View {
     }
 }
 
-// MARK: - OptionRow - 通用选项行（单选/多选共用）
-private struct OptionRow: View {
+// MARK: - OptionChip - 胶囊选项（单选/多选共用）
+private struct OptionChip: View {
     let label: String
     let isSelected: Bool
     let onTap: () -> Void
 
-    private var bgColor: Color { isSelected ? ChatTheme.accent : Color("input_bg") }
-    private var fgColor: Color { isSelected ? .white : ChatTheme.textPrimary }
-    private var iconColor: Color { isSelected ? .white : ChatTheme.textSecondary }
-    private var iconName: String { isSelected ? "checkmark.circle.fill" : "circle" }
-    private var borderColor: Color { isSelected ? Color.clear : ChatTheme.hairline }
-
     var body: some View {
         Button(action: onTap) {
-            HStack(spacing: 12) {
+            HStack(spacing: 5) {
+                if isSelected {
+                    Image(systemName: "checkmark")
+                        .font(.system(size: 11, weight: .bold))
+                        .foregroundStyle(.white)
+                }
                 Text(label)
-                    .font(.system(size: 14, weight: .semibold))
-                    .foregroundColor(fgColor)
-                Spacer()
-                Image(systemName: iconName)
-                    .font(.system(size: 16, weight: .semibold))
-                    .foregroundColor(iconColor)
+                    .font(.system(size: 14, weight: .medium))
+                    .foregroundStyle(isSelected ? .white : ChatTheme.textPrimary)
             }
             .padding(.horizontal, 14)
-            .padding(.vertical, 12)
-            .frame(maxWidth: .infinity, alignment: .leading)
-            .background(bgColor)
-            .cornerRadius(ChatTheme.radiusSm)
+            .padding(.vertical, 8)
+            .background(Capsule().fill(isSelected ? ChatTheme.accent : Color("input_bg")))
             .overlay(
-                RoundedRectangle(cornerRadius: ChatTheme.radiusSm)
-                    .stroke(borderColor, lineWidth: 1.2)
+                Capsule().stroke(isSelected ? Color.clear : ChatTheme.hairline, lineWidth: 1.2)
             )
         }
         .buttonStyle(.plain)
@@ -437,15 +429,16 @@ struct SelectButtonsField: View {
     @Binding var selectedValue: String
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        HFlow(alignment: .center, itemSpacing: 8, rowSpacing: 8) {
             ForEach(options, id: \.value) { option in
-                OptionRow(
+                OptionChip(
                     label: option.label,
                     isSelected: selectedValue == option.value,
                     onTap: { selectedValue = option.value }
                 )
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 
@@ -455,20 +448,23 @@ struct MultiSelectButtonsField: View {
     @Binding var selectedValues: Set<String>
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        HFlow(alignment: .center, itemSpacing: 8, rowSpacing: 8) {
             ForEach(options, id: \.value) { option in
-                OptionRow(
+                OptionChip(
                     label: option.label,
                     isSelected: selectedValues.contains(option.value),
-                    onTap: {
-                        if selectedValues.contains(option.value) {
-                            selectedValues.remove(option.value)
-                        } else {
-                            selectedValues.insert(option.value)
-                        }
-                    }
+                    onTap: { toggle(option.value) }
                 )
             }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private func toggle(_ value: String) {
+        if selectedValues.contains(value) {
+            selectedValues.remove(value)
+        } else {
+            selectedValues.insert(value)
         }
     }
 }
@@ -480,9 +476,9 @@ struct MultiSelectButtonsFieldWithSync: View {
     let onValuesChanged: (Set<String>) -> Void
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
+        HFlow(alignment: .center, itemSpacing: 8, rowSpacing: 8) {
             ForEach(options, id: \.value) { option in
-                OptionRow(
+                OptionChip(
                     label: option.label,
                     isSelected: selectedValues.contains(option.value),
                     onTap: {
@@ -496,6 +492,7 @@ struct MultiSelectButtonsFieldWithSync: View {
                 )
             }
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

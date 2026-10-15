@@ -253,9 +253,13 @@ public class SSEClient: NSObject {
             }
         }
         
-        // 打印请求体
+        // 打印请求体（JSON 时格式化输出，便于人工复查实际发出的字段）
         if let body = request.httpBody {
-            if let bodyString = String(data: body, encoding: .utf8) {
+            if let json = try? JSONSerialization.jsonObject(with: body),
+               let pretty = try? JSONSerialization.data(withJSONObject: json, options: [.prettyPrinted, .sortedKeys, .withoutEscapingSlashes]),
+               let prettyString = String(data: pretty, encoding: .utf8) {
+                print("请求体:\n\(prettyString)")
+            } else if let bodyString = String(data: body, encoding: .utf8) {
                 print("请求体: \(bodyString)")
             } else {
                 print("请求体: [二进制数据，大小: \(body.count) bytes]")

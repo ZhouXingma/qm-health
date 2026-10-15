@@ -20,6 +20,8 @@ class SseApi {
         let headersRel = headers ?? [:]
         
         // ========== 参数转换日志 ==========
+        // 请求体的实际内容由 SSEClient 在发出请求时以格式化 JSON 打印，
+        // 这里只做 URL 与请求头（敏感值隐藏），避免两处重复打印同一份 body
         print("========== SseApi 参数信息 ==========")
         print("URL: \(url)")
         print("请求头数量: \(headersRel.count)")
@@ -29,10 +31,6 @@ class SseApi {
             } else {
                 print("  \(key): \(value)")
             }
-        }
-        print("参数数量: \(paramRel.count)")
-        if !paramRel.isEmpty {
-            print("参数内容: \(paramRel)")
         }
         print("====================================")
         
