@@ -18,32 +18,13 @@ class SseApi {
         let paramDic = try? param?.toDictionary();
         let paramRel = paramDic ?? [:]
         let headersRel = headers ?? [:]
-        
-        // ========== 参数转换日志 ==========
-        // 请求体的实际内容由 SSEClient 在发出请求时以格式化 JSON 打印，
-        // 这里只做 URL 与请求头（敏感值隐藏），避免两处重复打印同一份 body
-        print("========== SseApi 参数信息 ==========")
-        print("URL: \(url)")
-        print("请求头数量: \(headersRel.count)")
-        for (key, value) in headersRel {
-            if key.lowercased().contains("token") || key.lowercased().contains("authorization") {
-                print("  \(key): [已隐藏]")
-            } else {
-                print("  \(key): \(value)")
-            }
-        }
-        print("====================================")
-        
+
         let client = SSEClient(
             urlString: url,
             configuration: SSEConfiguration.jsonBody(paramRel, headers: headersRel)
         )!
         // 3. 设置事件处理器
         client.onEvent = { event in
-//            print("========== Sse 数据信息 ==========")
-//            print("事件类型: \(event.event)")
-//            print("数据: \(event.data)")
-//            print("================================")
             switch event.event {
             case "data" :
                 dataHandle?(event.data)
