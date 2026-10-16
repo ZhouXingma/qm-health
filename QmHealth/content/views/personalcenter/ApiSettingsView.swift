@@ -14,6 +14,8 @@ struct ApiSettingsView: View {
     @State private var basicUrl: String = ApiConfig.currentBasicUrl
     @State private var aiUrl: String = ApiConfig.currentAiUrl
     @State private var showResetConfirm: Bool = false
+    /// 保存过的地址对（两个地址成对记录，最近使用的在最前）
+    @State private var history: [ApiConfig.EndpointPair] = ApiConfig.endpointHistory
 
     // 输入合法：非空、以 http:// 或 https:// 开头
     private var basicIsValid: Bool { Self.isValidUrl(basicUrl) }
@@ -55,6 +57,42 @@ struct ApiSettingsView: View {
                     )
                     .appShadow(AppShadow.card)
                     .padding(.horizontal, AppSpacing.screen)
+
+                    // 历史记录：保存过的地址对，点击直接切换
+                    sectionHeader(
+                        title: "历史记录",
+                        subtitle: "保存过的地址会成对记录在这里，点击即可切换，长按可删除；最多保留 \(ApiConfig.maxHistoryCount) 条。"
+                    )
+
+                    VStack(spacing: 0) {
+                        if history.isEmpty {
+                            Text("暂无记录，保存一次请求地址后会自动出现在这里")
+                                .font(.system(size: 13))
+                                .foregroundStyle(AppColor.textSecondary)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .padding(.horizontal, 14)
+                                .padding(.vertical, 14)
+                        } else {
+                            ForEach(Array(history.enumerated()), id: \.element.id) { index, pair in
+                                if index > 0 {
+                                    Divider().padding(.leading, 56)
+                                }
+                                historyRow(pair)
+                            }
+                        }
+                    }
+                    .background(
+                        RoundedRectangle(cornerRadius: 16, style: .continuous)
+                            .fill(AppColor.content)
+                    )
+                    .appShadow(AppShadow.card)
+                    .padding(.horizontal, AppSpacing.screen)
+
+                    Text("记录保存在本机文件：Documents/api_endpoints.json")
+                        .font(.system(size: 11))
+                        .foregroundStyle(AppColor.textSecondary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .padding(.horizontal, AppSpacing.screen + 4)
 
                     // 快速恢复默认
                     Button {
@@ -199,9 +237,93 @@ struct ApiSettingsView: View {
         return trimmed.hasPrefix("http://") || trimmed.hasPrefix("https://")
     }
 
+    /// 单条历史记录：业务 + 智能体地址成对展示，点击直接切换
+    private func historyRow(_ pair: ApiConfig.EndpointPair) -> some View {
+        let isCurrent = pair.basicUrl == ApiConfig.currentBasicUrl
+            && pair.aiUrl == ApiConfig.currentAiUrl
+
+        return Button {
+            apply(pair)
+        } label: {
+            HStack(spacing: 12) {
+                ZStack {
+                    RoundedRectangle(cornerRadius: 7, style: .continuous)
+                        .fill(AppColor.primary.opacity(0.12))
+                        .frame(width: 32, height: 32)
+                    Image(systemName: isCurrent ? "checkmark" : "clock.arrow.circlepath")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(AppColor.primary)
+                }
+
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("业务 \(Self.stripScheme(pair.basicUrl))")
+                        .font(.system(size: 13, weight: isCurrent ? .semibold : .regular, design: .monospaced))
+                        .foregroundColor(AppColor.textPrimary)
+                        .lineLimit(1)
+                    Text("智能体 \(Self.stripScheme(pair.aiUrl))")
+                        .font(.system(size: 13, design: .monospaced))
+                        .foregroundColor(AppColor.textSecondary)
+                        .lineLimit(1)
+                }
+
+                Spacer(minLength: 8)
+
+                if isCurrent {
+                    Text("当前")
+                        .font(.system(size: 11, weight: .medium))
+                        .foregroundColor(AppColor.primary)
+                        .padding(.horizontal, 8)
+                        .padding(.vertical, 3)
+                        .background(Capsule().fill(AppColor.primary.opacity(0.12)))
+                } else {
+                    Image(systemName: "arrow.left.arrow.right")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundColor(AppColor.textSecondary.opacity(0.6))
+                }
+            }
+            .padding(.horizontal, 14)
+            .padding(.vertical, 10)
+            .contentShape(Rectangle())
+        }
+        .buttonStyle(.plain)
+        .contextMenu {
+            Button(role: .destructive) {
+                delete(pair)
+            } label: {
+                Label("删除这条记录", systemImage: "trash")
+            }
+        }
+    }
+
+    private static func stripScheme(_ url: String) -> String {
+        url.replacingOccurrences(of: "http://", with: "")
+            .replacingOccurrences(of: "https://", with: "")
+    }
+
+    // MARK: - 保存与应用
+
+    /// 点击历史记录：填入输入框并立即生效，同时把该记录提到最前
+    private func apply(_ pair: ApiConfig.EndpointPair) {
+        basicUrl = pair.basicUrl
+        aiUrl = pair.aiUrl
+        save()
+        dismiss()
+    }
+
+    /// 长按菜单删除一条历史记录（不影响当前生效的地址）
+    private func delete(_ pair: ApiConfig.EndpointPair) {
+        ApiConfig.removeEndpointHistory(pair)
+        history = ApiConfig.endpointHistory
+    }
+
     private func save() {
-        ApiConfig.setBasicUrl(basicUrl.trimmingCharacters(in: .whitespacesAndNewlines))
-        ApiConfig.setAiUrl(aiUrl.trimmingCharacters(in: .whitespacesAndNewlines))
+        let basic = basicUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+        let ai = aiUrl.trimmingCharacters(in: .whitespacesAndNewlines)
+        ApiConfig.setBasicUrl(basic)
+        ApiConfig.setAiUrl(ai)
+        // 每保存一次记录一次，两个地址都一致则视为重复、提到最前
+        ApiConfig.recordEndpointHistory(basicUrl: basic, aiUrl: ai)
+        history = ApiConfig.endpointHistory
     }
 }
 

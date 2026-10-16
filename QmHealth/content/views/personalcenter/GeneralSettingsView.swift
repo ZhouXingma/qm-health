@@ -30,16 +30,9 @@ struct GeneralSettingsView: View {
     // 让网络错误弹窗显示在 sheet 内部而不是被 sheet 遮到背后。
     @StateObject private var popManager = PopManager()
 
-    /// 请求地址副标题：从当前生效的地址生成简短展示
-    private var apiSubtitle: String {
-        let basic = ApiConfig.currentBasicUrl
-            .replacingOccurrences(of: "http://", with: "")
-            .replacingOccurrences(of: "https://", with: "")
-        let ai = ApiConfig.currentAiUrl
-            .replacingOccurrences(of: "http://", with: "")
-            .replacingOccurrences(of: "https://", with: "")
-        return "业务 \(basic) · AI \(ai)"
-    }
+    /// 请求地址副标题：从当前生效的地址生成简短展示。
+    /// ApiConfig 是静态配置（非 ObservableObject），靠 apiConfigDidChange 通知刷新。
+    @State private var apiSubtitle: String = ""
 
     var body: some View {
         NavigationView {
@@ -179,8 +172,24 @@ struct GeneralSettingsView: View {
             ApiSettingsView()
         }
         .onAppear {
+            refreshApiSubtitle()
             loadConfig()
         }
+        .onReceive(NotificationCenter.default.publisher(for: .apiConfigDidChange)) { _ in
+            refreshApiSubtitle()
+        }
+    }
+
+    /// 按当前生效的地址刷新副标题
+    private func refreshApiSubtitle() {
+        let basic = Self.stripScheme(ApiConfig.currentBasicUrl)
+        let ai = Self.stripScheme(ApiConfig.currentAiUrl)
+        apiSubtitle = "业务 \(basic) · AI \(ai)"
+    }
+
+    private static func stripScheme(_ url: String) -> String {
+        url.replacingOccurrences(of: "http://", with: "")
+            .replacingOccurrences(of: "https://", with: "")
     }
 
     // MARK: - 子视图
