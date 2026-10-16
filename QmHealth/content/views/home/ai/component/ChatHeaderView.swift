@@ -43,13 +43,8 @@ struct ChatHeaderView: View {
             } label: {
                 HStack(spacing: 6) {
                     // 显示头像或默认图标
-                    if let headerImg = globalModel.currentUser?.headerImg, !headerImg.isEmpty {
-                        AsyncPersonAvatar(headerImgId: headerImg, size: 24)
-                    } else {
-                        Image(systemName: "person.circle.fill")
-                            .font(.system(size: 18))
-                            .foregroundStyle(Color.theme(.primary))
-                    }
+                    PersonAvatar(headerImgId: globalModel.currentUser?.headerImg)
+                        .frame(width: 24, height: 24)
 
                     Text(selectedPersonName.isEmpty ? "选择就诊人" : selectedPersonName)
                         .font(.system(size: 16, weight: .medium))
@@ -320,22 +315,8 @@ struct PersonAccountCard: View {
     var body: some View {
         HStack(spacing: 14) {
             // 头像
-            if let headerImg = user.headerImg, !headerImg.isEmpty {
-                AsyncPersonAvatar(headerImgId: headerImg, size: 50)
-            } else {
-                ZStack {
-                    Circle()
-                        .fill(Color.clear)
-                        .frame(width: 50, height: 50)
-                        .appGlass(.clear.tint(Color.theme(.primary).opacity(0.18)), in: Circle()) {
-                            Circle().fill(Color.theme(.primary).opacity(0.15))
-                        }
-
-                    Image(systemName: "person.fill")
-                        .font(.system(size: 24))
-                        .foregroundColor(Color.theme(.primary))
-                }
-            }
+            PersonAvatar(headerImgId: user.headerImg, placeholderStyle: .glass)
+                .frame(width: 50, height: 50)
 
             // 用户信息
             VStack(alignment: .leading, spacing: 4) {
@@ -422,78 +403,6 @@ struct AddPersonCard: View {
             .contentShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
             .glassContainer(cornerRadius: 12)
         }
-    }
-}
-
-// MARK: - 异步加载头像组件
-struct AsyncPersonAvatar: View {
-    let headerImgId: String
-    let size: CGFloat
-
-    @State private var imageData: Data?
-    @State private var isLoading = false
-
-    var body: some View {
-        ZStack {
-            if let imageData = imageData, let uiImage = UIImage(data: imageData) {
-                Image(uiImage: uiImage)
-                    .resizable()
-                    .aspectRatio(contentMode: .fill)
-                    .frame(width: size, height: size)
-                    .clipShape(Circle())
-            } else {
-                Circle()
-                    .fill(Color.clear)
-                    .frame(width: size, height: size)
-                    .appGlass(.clear.tint(Color.theme(.primary).opacity(0.18)), in: Circle()) {
-                        Circle().fill(Color.theme(.primary).opacity(0.15))
-                    }
-                    .overlay(
-                        Group {
-                            if isLoading {
-                                ProgressView()
-                                    .scaleEffect(0.7)
-                            } else {
-                                Image(systemName: "person.fill")
-                                    .font(.system(size: size * 0.5))
-                                    .foregroundColor(Color.theme(.primary))
-                            }
-                        }
-                    )
-            }
-        }
-        .onAppear {
-            loadImage()
-        }
-        .onChange(of: headerImgId) { _, _ in
-            loadImage()
-        }
-        .id(headerImgId) // 添加 id 确保当 headerImgId 改变时重新创建视图
-    }
-    
-    private func loadImage() {
-        guard !headerImgId.isEmpty else { 
-            imageData = nil
-            return 
-        }
-        
-        isLoading = true
-        let url = apiUrl(FILE_LOAD + "/\(headerImgId)")
-        
-        BgResultNetWork<Empty, Data>(url, method: .get)
-            .complicationHand { (data: Data?) in
-                DispatchQueue.main.async {
-                    self.imageData = data
-                    self.isLoading = false
-                }
-            }
-            .errorHandle { _, _ in
-                DispatchQueue.main.async {
-                    self.imageData = nil
-                    self.isLoading = false
-                }
-            }
-            .response()
     }
 }
 

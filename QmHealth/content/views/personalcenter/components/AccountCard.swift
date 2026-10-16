@@ -29,7 +29,7 @@ struct AccountCard: View {
         VStack(spacing: 0) {
             HStack(spacing: 12) {
                 // 头像
-                PersonHeaderImage(headerImgId: .constant(user.headerImg))
+                PersonAvatar(headerImgId: user.headerImg)
                     .frame(width: 48, height: 48)
 
                 // 用户信息

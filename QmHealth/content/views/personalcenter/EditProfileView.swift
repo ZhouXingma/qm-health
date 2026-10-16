@@ -341,6 +341,10 @@ struct EditProfileView: View {
                     }
                     .complicationHand { (r: String?) in
                         DispatchQueue.main.async {
+                            // 旧头像不再使用，清掉它的本地缓存
+                            if let oldHeaderImg = globalModel.currentUser?.headerImg {
+                                AvatarCache.remove(for: AvatarCache.url(for: oldHeaderImg))
+                            }
                             globalModel.currentUser?.headerImg = results[0].id
                             self.uploadProgress = nil
                             popManager.showSimplePop(title: "提示", description: "头像更新成功")

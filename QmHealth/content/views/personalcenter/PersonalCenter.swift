@@ -244,7 +244,7 @@ struct UserProfileCard: View {
             // 顶部：头像和基本信息
             HStack(spacing: 16) {
                 // 头像
-                PersonHeaderImage(headerImgId: .constant(globalModel.currentUser?.headerImg))
+                PersonAvatar(headerImgId: globalModel.currentUser?.headerImg)
                     .frame(width: 70, height: 70)
                 
                 // 用户信息

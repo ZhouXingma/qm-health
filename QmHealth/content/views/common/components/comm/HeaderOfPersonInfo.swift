@@ -26,7 +26,7 @@ struct HeaderOfPersonInfo: View {
             NavigationLink {
                 PersonInfoDetail()
             } label: {
-                PersonHeaderImage(headerImgId: .constant(headImageId))
+                PersonAvatar(headerImgId: headImageId)
                     .frame(width: 45, height: 45)
             }
             VStack(alignment: .leading){

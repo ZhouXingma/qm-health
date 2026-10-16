@@ -32,21 +32,9 @@ struct HeaderImageSelect: View {
                 Circle()
                     .fill(Color("background").opacity(0.6))
                     .shadow(color: Color.black.opacity(0.1), radius: 5, x: 0, y: 2)
-                Group {
-                    if let selectedImageData,
-                       let image = UIImage(data: selectedImageData) {
-                        Image(uiImage: image)
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    } else {
-                        Image(systemName: "person.circle.fill")
-                            .resizable()
-                            .aspectRatio(contentMode: .fill)
-                    }
-                }
-                .frame(width: width, height: height, alignment: .center)
-                .foregroundColor(Color.theme(.chart1))
-                .clipShape(Circle())
+                // 头像：走统一组件（本地缓存优先）
+                PersonAvatar(headerImgId: headerImgId, previewData: selectedImageData)
+                    .frame(width: width, height: height)
                 // 上传进度蒙层 + 圆形进度条
                 if let progress = uploadProgress {
                     uploadOverlay(width: width, height: height, progress: progress)
@@ -64,10 +52,6 @@ struct HeaderImageSelect: View {
                 }
                 .offset(x: width/3, y: height/3)
                 .disabled(uploadProgress != nil)
-            }.onAppear {
-                loadHeadImage()
-            }.onChange(of: headerImgId) { oldValue, newValue in
-                loadHeadImage()
             }.onChange(of: selectedItem) { oldItem, newItem in
                 Task {
                     guard let data = try? await newItem?.loadTransferable(type: Data.self),
@@ -127,23 +111,5 @@ struct HeaderImageSelect: View {
         }
         .allowsHitTesting(true)
         .transition(.opacity)
-    }
-
-
-    func loadHeadImage() {
-        if let headerImgIdStr = headerImgId {
-            let url = apiUrl(FILE_LOAD + "/\(headerImgIdStr)");
-            BgResultNetWork<Empty, Data>(url, method: .get)
-                .complicationHand { (data:Data?) in
-                    if nil != data {
-                        self.selectedImageData = data
-                    }
-                }
-                .finalHandleFunc { _ in
-
-                }.response()
-        } else {
-            self.selectedImageData = nil
-        }
     }
 }
