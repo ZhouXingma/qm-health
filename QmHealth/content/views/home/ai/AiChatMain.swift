@@ -528,24 +528,24 @@ struct AiChatMain: View {
     private var healthQuestionExamples: [HealthQuestionExample] {
         [
             HealthQuestionExample(
-                title: "指标解读",
-                question: "我的血压和心率记录需要注意什么？",
-                icon: "waveform.path.ecg"
-            ),
-            HealthQuestionExample(
                 title: "用药提醒",
                 question: "帮我整理今天的用药注意事项。",
                 icon: "pills.fill"
             ),
             HealthQuestionExample(
-                title: "饮水计划",
-                question: "根据我的情况，今天应该怎样安排饮水？",
-                icon: "drop.fill"
+                title: "每日任务",
+                question: "重新生成我今日的任务。",
+                icon: "checklist"
             ),
             HealthQuestionExample(
                 title: "就诊准备",
-                question: "去医院复诊前，我应该准备哪些信息？",
+                question: "我要去医院就诊，我应该准备哪些信息？",
                 icon: "stethoscope"
+            ),
+            HealthQuestionExample(
+                title: "饮食咨询",
+                question: "我今天饮食需要注意什么？",
+                icon: "fork.knife"
             )
         ]
     }
