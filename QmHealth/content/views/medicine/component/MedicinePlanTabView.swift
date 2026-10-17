@@ -70,6 +70,8 @@ struct MedicinePlanTabView: View {
             ) { _ in
                 // 以服务端列表为准，确保新计划与动态 takingInfo 均为最新数据。
                 loadPlans()
+                // 新增计划需要排入对应提醒。
+                MedicineReminder.shared.refresh()
             }
         }
         .sheet(item: $editingPlan) { plan in
@@ -78,10 +80,13 @@ struct MedicinePlanTabView: View {
                 medicineFormUnits: $medicineFormUnits,
                 onSaved: { _ in
                     loadPlans()
+                    // 计划时间/频次可能已变更，重排提醒。
+                    MedicineReminder.shared.refresh()
                 },
                 editingPlan: plan,
                 onDeleted: {
                     loadPlans()
+                    MedicineReminder.shared.refresh()
                 }
             )
         }

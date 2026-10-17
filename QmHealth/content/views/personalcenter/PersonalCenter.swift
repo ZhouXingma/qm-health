@@ -13,6 +13,7 @@ struct PersonalCenter: View {
     @State private var showAccountSwitch = false
     @State private var showDisplaySettings = false
     @State private var showGeneralSettings = false
+    @State private var showMedicineReminderSettings = false
     @State private var showHelpFeedback = false
     @State private var showLogoutConfirm = false
     @State private var isLoggingOut = false
@@ -31,6 +32,7 @@ struct PersonalCenter: View {
                 SettingsSection(
                     showDisplaySettings: $showDisplaySettings,
                     showGeneralSettings: $showGeneralSettings,
+                    showMedicineReminderSettings: $showMedicineReminderSettings,
                     showHelpFeedback: $showHelpFeedback
                 )
 
@@ -59,6 +61,9 @@ struct PersonalCenter: View {
         }
         .sheet(isPresented: $showGeneralSettings) {
             GeneralSettingsView()
+        }
+        .sheet(isPresented: $showMedicineReminderSettings) {
+            MedicineReminderSettingsView()
         }
         .sheet(isPresented: $showHelpFeedback) {
             HelpFeedbackView()
@@ -153,6 +158,8 @@ struct PersonalCenter: View {
                 isLoggingOut = false
                 // 通知首页刷新：切完账户后首页各子模块需要重新拉数据，并清掉旧账户的脏 state
                 HomeRefreshBus.shared.triggerRefresh()
+                // 提醒数据属于账号，切账号后要按新账号重排。
+                MedicineReminder.shared.refresh()
                 // 退出成功 + 已切换到另一个账号，给用户明确反馈
                 PopManager.shared.showSimplePop(
                     title: "退出成功",
@@ -185,6 +192,8 @@ struct PersonalCenter: View {
                 globalModel.currentUser = nil
                 globalModel.isLogin = false
                 isLoggingOut = false
+                // 已无账号登录，清掉残留的用药提醒。
+                MedicineReminder.shared.clearAll()
                 // 退出成功（无其他账号可切），给用户明确反馈
                 PopManager.shared.showSimplePop(
                     title: "退出成功",
@@ -445,10 +454,19 @@ struct FunctionMenuSection: View {
 struct SettingsSection: View {
     @Binding var showDisplaySettings: Bool
     @Binding var showGeneralSettings: Bool
+    @Binding var showMedicineReminderSettings: Bool
     @Binding var showHelpFeedback: Bool
 
     var body: some View {
         VStack(spacing: 0) {
+            MenuItemRow(
+                icon: "bell.badge.fill",
+                title: "用药提醒",
+                iconColor: Color.theme(.primary),
+                showDivider: true,
+                action: { showMedicineReminderSettings = true }
+            )
+
             MenuItemRow(
                 icon: "eye.fill",
                 title: "显示设置",

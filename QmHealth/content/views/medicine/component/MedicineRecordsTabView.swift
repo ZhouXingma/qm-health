@@ -131,6 +131,8 @@ struct MedicineRecordsTabView: View {
                     loadMarkedDates(for: selectedDate, forceRefresh: true)
                     // 用药记录可能已匹配到今日计划，刷新计划状态。
                     loadTodayMedicinePlans()
+                    // 已服用的时间点要撤掉对应提醒。
+                    MedicineReminder.shared.refresh()
                 }
             )
         }
@@ -310,6 +312,8 @@ struct MedicineRecordsTabView: View {
                 loadMarkedDates(for: selectedDate, forceRefresh: true)
                 // 删除的记录可能影响今日计划的已服状态。
                 loadTodayMedicinePlans()
+                // 撤销服用后需要把提醒重新排回来。
+                MedicineReminder.shared.refresh()
             }
             .errorHandle { (_, _) in
                 // 删除失败时的处理

@@ -10,7 +10,8 @@ import SwiftUI
 struct ContentView: View {
     @StateObject var globalModel = GlobalModel.shared
     @StateObject var themeManager = ThemeManager.shared
-    
+    @Environment(\.scenePhase) private var scenePhase
+
     var body: some View {
         VStack {
             if !globalModel.isLogin {
@@ -34,7 +35,20 @@ struct ContentView: View {
         .id(themeManager.appearanceTheme.rawValue)
         .onAppear() {
             initData()
-            
+
+        }
+        .onChange(of: globalModel.isLogin) { _, isLogin in
+            // 登录后重排用药提醒以滚动调度窗口；未登录时 refresh 内部会直接清理。
+            if isLogin {
+                MedicineReminder.shared.refresh()
+            }
+        }
+        .onChange(of: scenePhase) { _, phase in
+            // 从后台切回前台也要重排：App 未被杀时 isLogin 不变，
+            // 只靠上面的 onChange 会漏掉「回到 App 补发错过提醒」这条路径。
+            if phase == .active {
+                MedicineReminder.shared.refresh()
+            }
         }
     }
     
