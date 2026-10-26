@@ -14,35 +14,41 @@ struct Home2: View {
 
     var body: some View {
         GeometryReader { geo in
+            // 宽屏（Duo 展开 / iPad 横屏）：左肖像、右内容；窄屏保持原单栏
+            let isWide = geo.size.width > geo.size.height
+            // 9:16 肖像在宽屏下不再等比放大到超出屏幕
+            let heroWidth = isWide
+                ? min(geo.size.width * 0.42, 430)
+                : min(geo.size.width, geo.size.height * 9 / 16)
             ScrollViewReader { proxy in
-                ScrollView(showsIndicators: false) {
-                    VStack(spacing: 14) {
-                        Color.clear
-                            .frame(height: 0)
-                            .id("home2.top")
+                Group {
+                    if isWide {
+                        HStack(alignment: .top, spacing: 0) {
+                            ScrollView(showsIndicators: false) {
+                                heroSection(width: heroWidth)
+                            }
+                            .frame(width: heroWidth)
 
-                        // 通栏个人肖像动画（9:16 原比例），疾病 / 过敏源浮在左右上角
-                        ZStack(alignment: .top) {
-                            PortraitHeroView(user: globalModel.currentUser, width: geo.size.width)
-
-                            Home2SidePanels()
-                                .padding(.horizontal, 14)
-                                .padding(.top, 14)
+                            ScrollView(showsIndicators: false) {
+                                contentSection
+                                    .frame(maxWidth: 620)
+                                    .frame(maxWidth: .infinity)
+                            }
                         }
+                    } else {
+                        ScrollView(showsIndicators: false) {
+                            VStack(spacing: 14) {
+                                Color.clear
+                                    .frame(height: 0)
+                                    .id("home2.top")
 
-                        // 上滑后展示：今日任务、健康曲线、饮水、指标
-                        VStack(spacing: 20) {
-                            DailyHealthTaskView()
-                            HealthCurveTabView()
-                            WaterIntakeView()
-                            HealthIndicatorsView()
+                                heroSection(width: heroWidth)
 
-                            Color.clear.frame(height: 110)
+                                contentSection
+                            }
+                            .padding(.top, 0)
                         }
-                        .padding(.horizontal, 20)
-                        .padding(.top, 4)
                     }
-                    .padding(.top, 0)
                 }
                 .safeAreaInset(edge: .top, spacing: 0) {
                     headerBar
@@ -61,6 +67,33 @@ struct Home2: View {
         }
         .glassBackground()
         .environmentObject(refreshBus)
+    }
+
+    /// 通栏个人肖像动画（9:16 原比例），疾病 / 过敏源浮在左右上角
+    private func heroSection(width: CGFloat) -> some View {
+        ZStack(alignment: .top) {
+            PortraitHeroView(user: globalModel.currentUser, width: width)
+
+            Home2SidePanels()
+                .padding(.horizontal, 14)
+                .padding(.top, 14)
+        }
+        .frame(width: width)
+        .frame(maxWidth: .infinity)
+    }
+
+    /// 肖像下方：今日任务、健康曲线、饮水、指标
+    private var contentSection: some View {
+        VStack(spacing: 20) {
+            DailyHealthTaskView()
+            HealthCurveTabView()
+            WaterIntakeView()
+            HealthIndicatorsView()
+
+            Color.clear.frame(height: 110)
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 4)
     }
 
     /// 固定顶部：液态玻璃条，内容从下方滚过
