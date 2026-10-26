@@ -17,7 +17,7 @@ struct DateTimePickerSheet: View {
     @State private var selectedMinute = 0
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 20) {
                 VStack(spacing: 16) {
                     // 日期选择

@@ -25,7 +25,7 @@ struct ReportFileViewer: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 // 与 OCR 预览一致：沉浸式黑色背景
                 Color.black.ignoresSafeArea()

@@ -35,7 +35,7 @@ struct GeneralSettingsView: View {
     @State private var apiSubtitle: String = ""
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: AppSpacing.card) {
                     // 说明文字

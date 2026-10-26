@@ -18,7 +18,7 @@ struct SwitchAccountView: View {
     @State private var accountToDelete: UserDTO?
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 Color("background").ignoresSafeArea()
                 

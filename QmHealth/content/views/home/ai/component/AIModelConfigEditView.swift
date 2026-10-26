@@ -67,7 +67,7 @@ struct AIModelConfigEditView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: AppSpacing.card) {
                     purposeCard

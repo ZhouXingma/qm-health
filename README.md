@@ -13,7 +13,7 @@
 <table>
 <tr>
 <td align="center"><img src="doc/screenshots/登录.png" width="250"><br><sub>登录 / 注册</sub></td>
-<td align="center"><img src="doc/screenshots/首页.png" width="250"><br><sub>首页（档案概览 / 任务 / 曲线入口）</sub></td>
+<td align="center"><img src="doc/screenshots/首页.png" width="250"><br><sub>首页（个人肖像 / 疾病过敏 / 今日任务）</sub></td>
 </tr>
 </table>
 

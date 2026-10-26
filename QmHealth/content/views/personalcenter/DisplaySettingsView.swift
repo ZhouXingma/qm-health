@@ -18,7 +18,7 @@ struct DisplaySettingsView: View {
     // 注：液态玻璃开关已移除（项目要求"玻璃永远开启"），glassConfig 引用清理。
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: AppSpacing.card) {
                     sectionHeader(

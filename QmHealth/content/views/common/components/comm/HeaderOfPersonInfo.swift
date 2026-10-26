@@ -12,6 +12,12 @@ struct HeaderOfPersonInfo: View {
     @EnvironmentObject var globalModel:GlobalModel;
     // 首页刷新事件总线
     @EnvironmentObject var refreshBus: HomeRefreshBus;
+    // 姓名后显示年龄
+    var showsAge: Bool = false
+    // 支持在「姓名 / 昵称」之间切换
+    var allowsNameToggle: Bool = false
+    // 名称展示偏好（仅在支持切换时生效）
+    @AppStorage("home2.displayNickname") private var showNickname: Bool = false
     // 患者状态标签
     @State private var statusTag: [String] = []
     // 患者头像图片
@@ -19,6 +25,23 @@ struct HeaderOfPersonInfo: View {
         get {
             return globalModel.currentUser?.headerImg
         }
+    }
+    // 当前展示的名称：昵称为空时回退到姓名
+    private var displayName: String {
+        if allowsNameToggle, showNickname,
+           let nickname = globalModel.currentUser?.nickname,
+           !nickname.isEmpty {
+            return nickname
+        }
+        return globalModel.currentUser?.name ?? "未设置用户名"
+    }
+    // 年龄文案（仅在 showsAge 时展示）
+    private var ageText: String? {
+        guard showsAge,
+              let age = PortraitAnimation.age(from: globalModel.currentUser?.birthday) else {
+            return nil
+        }
+        return "\(age)岁"
     }
     var body: some View {
         // 基本头像和基本信息
@@ -30,8 +53,16 @@ struct HeaderOfPersonInfo: View {
                     .frame(width: 45, height: 45)
             }
             VStack(alignment: .leading){
-                HStack {
-                    Text(globalModel.currentUser?.name ?? "未设置用户名").font(.system(size: 16, weight: .bold))
+                HStack(spacing: 6) {
+                    nameView
+                    if let ageText {
+                        Text(ageText)
+                            .font(.system(size: 11, weight: .semibold))
+                            .foregroundStyle(Color.theme(.primary))
+                            .padding(.horizontal, 6)
+                            .padding(.vertical, 2)
+                            .background(Capsule().fill(Color.theme(.primary).opacity(0.12)))
+                    }
                 }.padding(.top, 2)
                 ScrollView([.horizontal], showsIndicators: false) {
                     HStack {
@@ -40,7 +71,7 @@ struct HeaderOfPersonInfo: View {
                         }
                     }
                 }.padding(.top, -5)
-               
+
             }.padding(.leading, 2)
             Spacer()
         }.padding(.bottom, 5)
@@ -51,6 +82,33 @@ struct HeaderOfPersonInfo: View {
                 loadUserTag()
             }
     }
+
+    // MARK: - 姓名
+    @ViewBuilder
+    private var nameView: some View {
+        if allowsNameToggle {
+            Menu {
+                Picker("显示名称", selection: $showNickname) {
+                    Text("显示姓名").tag(false)
+                    Text("显示昵称").tag(true)
+                }
+                .pickerStyle(.inline)
+            } label: {
+                HStack(spacing: 4) {
+                    Text(displayName)
+                        .font(.system(size: 16, weight: .bold))
+                        .foregroundStyle(Color("text_primary"))
+                        .lineLimit(1)
+                    Image(systemName: "chevron.down")
+                        .font(.system(size: 9, weight: .semibold))
+                        .foregroundStyle(Color("text_secondary"))
+                }
+            }
+        } else {
+            Text(displayName).font(.system(size: 16, weight: .bold))
+        }
+    }
+
     
     // MARK: - 子组件
     // 标签

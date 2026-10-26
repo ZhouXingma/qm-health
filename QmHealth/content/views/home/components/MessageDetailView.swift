@@ -199,7 +199,7 @@ extension MessageNotification {
 }
 
 #Preview {
-    NavigationView {
+    NavigationStack {
         MessageDetailView(
             message: MessageNotification(
                 id: "1",

@@ -16,7 +16,7 @@ struct AddAccountView: View {
     @State private var selectedTab = 0  // 0: 登录, 1: 注册
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 // 渐变背景
                 LinearGradient(

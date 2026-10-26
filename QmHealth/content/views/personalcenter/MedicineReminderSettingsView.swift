@@ -15,7 +15,7 @@ struct MedicineReminderSettingsView: View {
     @State private var isRequestingAuth = false
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: AppSpacing.card) {
                     sectionHeader(

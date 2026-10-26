@@ -10,10 +10,20 @@ import SwiftUI
 // 聊天顶部导航栏
 struct ChatHeaderView: View {
     @EnvironmentObject var globalModel: GlobalModel
-    @State private var selectedPersonName: String = ""
+    // 与首页一致的显示偏好：昵称 / 姓名
+    @AppStorage("home2.displayNickname") private var showNickname: Bool = false
     @Binding var showPersonSelector: Bool
     @Binding var showHistorySidebar: Bool
     @Binding var currentSelect: Int
+
+    // 当前就诊人名称（跟随首页的姓名/昵称偏好）
+    private var selectedPersonName: String {
+        guard let user = globalModel.currentUser else { return "" }
+        if showNickname, let nickname = user.nickname, !nickname.isEmpty {
+            return nickname
+        }
+        return user.name ?? user.nickname ?? "未命名"
+    }
     
     var body: some View {
         HStack(spacing: 12) {
@@ -82,20 +92,6 @@ struct ChatHeaderView: View {
                 .opacity(0.95)
                 .background(.ultraThinMaterial)
         )
-        .onAppear {
-            updateSelectedPersonName()
-        }
-        .onChange(of: globalModel.currentUser?.id) { _, _ in
-            updateSelectedPersonName()
-        }
-    }
-    
-    private func updateSelectedPersonName() {
-        if let user = globalModel.currentUser {
-            selectedPersonName = user.name ?? user.nickname ?? "未命名"
-        } else {
-            selectedPersonName = ""
-        }
     }
 }
 
@@ -108,7 +104,7 @@ struct PersonSelectorSheet: View {
     @State private var isLoading = false
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 Color("background").ignoresSafeArea()
                 
@@ -307,10 +303,28 @@ struct PersonSelectorSheet: View {
 
 // MARK: - 就诊人账号卡片
 struct PersonAccountCard: View {
+    // 与首页一致的显示偏好：昵称 / 姓名
+    @AppStorage("home2.displayNickname") private var showNickname: Bool = false
     let user: UserDTO
     let isCurrentUser: Bool
     let onSwitch: () -> Void
     let onDelete: () -> Void
+
+    private var displayName: String {
+        if showNickname, let nickname = user.nickname, !nickname.isEmpty {
+            return nickname
+        }
+        return user.name ?? user.nickname ?? "未命名"
+    }
+
+    // 副标题展示另一种名称，避免两行重复
+    private var secondaryName: String? {
+        if showNickname, let nickname = user.nickname, !nickname.isEmpty {
+            return user.name != nickname ? user.name : nil
+        }
+        guard let nickname = user.nickname, user.name != nickname else { return nil }
+        return nickname
+    }
 
     var body: some View {
         HStack(spacing: 14) {
@@ -321,7 +335,7 @@ struct PersonAccountCard: View {
             // 用户信息
             VStack(alignment: .leading, spacing: 4) {
                 HStack(spacing: 8) {
-                    Text(user.name ?? user.nickname ?? "未命名")
+                    Text(displayName)
                         .font(.system(size: 16, weight: .semibold))
                         .foregroundColor(Color("text_primary"))
 
@@ -335,8 +349,8 @@ struct PersonAccountCard: View {
                     }
                 }
 
-                if let nickname = user.nickname, user.name != nickname {
-                    Text(nickname)
+                if let secondaryName {
+                    Text(secondaryName)
                         .font(.system(size: 13))
                         .foregroundColor(Color("text_secondary"))
                 }

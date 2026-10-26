@@ -25,7 +25,7 @@ struct FamilyHistoryEditView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 // 背景渐变
                 LinearGradient(

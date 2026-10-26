@@ -44,7 +44,7 @@ struct AIConfigListView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 0) {
                 purposeTabs
                 content

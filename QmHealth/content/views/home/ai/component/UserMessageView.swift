@@ -231,7 +231,7 @@ private struct _ChatImageViewer: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 Color(.systemBackground).ignoresSafeArea()
                 LinearGradient(

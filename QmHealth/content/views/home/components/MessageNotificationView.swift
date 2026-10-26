@@ -110,7 +110,7 @@ struct MessageListView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 0) {
                 // 筛选栏
                 filterBarView

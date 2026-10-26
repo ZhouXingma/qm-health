@@ -191,6 +191,8 @@ struct DiseaseListView: View {
                 }
             }
             .listStyle(PlainListStyle())
+            .scrollContentBackground(.hidden)
+            .background(Color("background"))
             .refreshable {
                 resetAndLoadDiseases()
             }
@@ -448,7 +450,7 @@ struct FilterView: View {
     var onApply: (() -> Void)? = nil
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 24) {
                 // 严重程度过滤
                 VStack(alignment: .leading, spacing: 12) {

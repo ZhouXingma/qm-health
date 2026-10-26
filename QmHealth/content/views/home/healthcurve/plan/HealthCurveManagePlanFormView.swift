@@ -85,7 +85,7 @@ struct HealthCurveManagePlanFormView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 0) {
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 16) {
@@ -688,7 +688,7 @@ struct AIReportPreviewView: View {
     let report: AIGeneratedReport
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             // WebView 内部已启用滚动，直接显示即可
             // 不需要外层 ScrollView 和 fixedSize，避免双层滚动冲突
             // 让 WebView 自然占据可用空间，用户在 WebView 内滚动查看内容

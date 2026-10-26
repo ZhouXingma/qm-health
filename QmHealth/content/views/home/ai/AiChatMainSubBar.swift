@@ -812,7 +812,7 @@ struct FullScreenTextEditor: View {
     var onSend: () -> Void
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 TextEditor(text: $text)
                     .font(.system(size: 18))
@@ -862,6 +862,8 @@ struct MulLineTextField: View {
     var onSubmit: (() -> Void)?
     
     @State private var isScrollEnabled: Bool = false
+    /// 由布局测得，避免使用 UIScreen.main 这类单窗口假设的值
+    @State private var availableWidth: CGFloat = 0
     
     var body: some View {
         ZStack(alignment: .topLeading) {
@@ -888,17 +890,25 @@ struct MulLineTextField: View {
                 .onAppear {
                     calculateHeight(for: text)
                 }
+                .onGeometryChange(for: CGFloat.self) { proxy in
+                    proxy.size.width
+                } action: { newWidth in
+                    guard abs(newWidth - availableWidth) > 0.5 else { return }
+                    availableWidth = newWidth
+                    calculateHeight(for: text)
+                }
         }
     }
     
     private func calculateHeight(for text: String) {
+        guard availableWidth > 0 else { return }
         let lineHeight = font.lineHeight
         let maxHeight = lineHeight * CGFloat(maxLines)
-        
+
         // 计算文本实际需要的高度
         let textToMeasure = text.isEmpty ? " " : text
         let size = textToMeasure.boundingRect(
-            with: CGSize(width: UIScreen.main.bounds.width - 100, height: .greatestFiniteMagnitude),
+            with: CGSize(width: availableWidth, height: .greatestFiniteMagnitude),
             options: [.usesLineFragmentOrigin, .usesFontLeading],
             attributes: [.font: font],
             context: nil

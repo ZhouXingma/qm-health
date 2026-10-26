@@ -89,7 +89,7 @@ struct CreateMedicalRecordView: View {
     @State private var pendingOcrImages: [Data] = []
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 ScrollView(showsIndicators: false) {
                     VStack(spacing: 16) {

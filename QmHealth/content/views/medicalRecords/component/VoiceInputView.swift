@@ -15,7 +15,7 @@ struct VoiceInputView: View {
     var restartInterval: TimeInterval = 10
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 Color("background").ignoresSafeArea()
                 

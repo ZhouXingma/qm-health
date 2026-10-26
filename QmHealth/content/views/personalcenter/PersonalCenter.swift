@@ -234,8 +234,19 @@ struct LogoutButton: View {
 // MARK: - 用户信息卡片
 struct UserProfileCard: View {
     @EnvironmentObject var globalModel: GlobalModel
+    // 与首页一致的显示偏好：昵称 / 姓名
+    @AppStorage("home2.displayNickname") private var showNickname: Bool = false
     @Binding var showEditProfile: Bool
     @Binding var showAccountSwitch: Bool
+
+    // 当前展示的名称（跟随首页的姓名/昵称偏好）
+    private var displayName: String {
+        guard let user = globalModel.currentUser else { return "未设置姓名" }
+        if showNickname, let nickname = user.nickname, !nickname.isEmpty {
+            return nickname
+        }
+        return user.name ?? "未设置姓名"
+    }
     
     // 计算年龄
     private var age: Int? {
@@ -259,7 +270,7 @@ struct UserProfileCard: View {
                 // 用户信息
                 VStack(alignment: .leading, spacing: 8) {
                     HStack(spacing: 8) {
-                        Text(globalModel.currentUser?.name ?? "未设置姓名")
+                        Text(displayName)
                             .font(.system(size: 19, weight: .bold))
                             .foregroundColor(Color("text_primary"))
                         

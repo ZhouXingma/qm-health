@@ -159,6 +159,8 @@ struct AllegyInfoListView: View {
             }
         }
         .listStyle(PlainListStyle())
+        .scrollContentBackground(.hidden)
+        .background(Color("background"))
         .refreshable {
             loadUserAllegyInfo()
         }

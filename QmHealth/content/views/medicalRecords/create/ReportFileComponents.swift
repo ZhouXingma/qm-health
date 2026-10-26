@@ -368,7 +368,7 @@ struct EditReportNameView: View {
     @FocusState private var isTextFieldFocused: Bool
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 Color("background").ignoresSafeArea()
                 

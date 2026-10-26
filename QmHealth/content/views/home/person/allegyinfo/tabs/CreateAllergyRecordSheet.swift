@@ -25,7 +25,7 @@ struct CreateAllergyRecordSheet: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: 16) {
                     // 发作时间

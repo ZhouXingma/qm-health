@@ -253,7 +253,7 @@ struct ChatHistorySheet: View {
     @StateObject private var popManager = PopManager()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 0) {
                 ZStack {
                     Color("background").ignoresSafeArea()

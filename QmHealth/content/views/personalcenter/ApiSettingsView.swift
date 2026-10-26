@@ -22,7 +22,7 @@ struct ApiSettingsView: View {
     private var aiIsValid: Bool { Self.isValidUrl(aiUrl) }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: AppSpacing.card) {
                     sectionHeader(

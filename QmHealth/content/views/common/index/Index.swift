@@ -14,7 +14,7 @@ struct Index: View {
     @State private var currentSelect:Int = 0;
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
 //            ZStack {
 //                VStack{
 //                    VStack {
@@ -45,7 +45,8 @@ struct Index: View {
                 if currentSelect != 99 {
                     TabView(selection: $currentSelect) {
                         Tab("", systemImage: "house.fill", value: 0) {
-                            Home()
+                            // 新版首页；如需回退改回 Home()
+                            Home2()
                         }
                         Tab("", systemImage: "heart.text.clipboard.fill", value: 1) {
                             MedicalRecordsView()

@@ -24,7 +24,7 @@ struct WaterDrinkEditTargetView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: AppSpacing.card) {
                     headerSection

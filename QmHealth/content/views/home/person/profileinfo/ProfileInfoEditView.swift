@@ -73,7 +73,7 @@ struct ProfileInfoEditView: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 Color("background").ignoresSafeArea()
                 
@@ -916,7 +916,7 @@ struct RecordEditSheet: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 Color("background").ignoresSafeArea()
                 

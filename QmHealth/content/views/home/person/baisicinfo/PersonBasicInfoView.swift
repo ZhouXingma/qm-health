@@ -612,7 +612,7 @@ struct TextEditorSheet: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 20) {
                 SimpleTextField(placeholder: placeholder, text: $text)
                 Spacer()
@@ -639,7 +639,7 @@ struct SexSelectSheet: View {
     let onSave: () -> Void
     @Environment(\.dismiss) private var dismiss
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 20) {
                 VStack {
                     HStack {
@@ -698,7 +698,7 @@ struct JobSelectSheet: View {
     ]
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView(showsIndicators: false) {
                 VStack(alignment: .leading, spacing: 22) {
                     SimpleTextField(placeholder: "输入或从下方选择职业", text: $selectedJob)
@@ -752,7 +752,7 @@ struct CitySelectSheet:View {
     let onSave: () -> Void
     @Environment(\.dismiss) private var dismiss
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 CitySelect(selectedCity: $selectedCity)
                 Spacer()
@@ -776,7 +776,7 @@ struct DateSelectSheet:View {
     let onSave: () -> Void
     @Environment(\.dismiss) private var dismiss
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 20) {
                 DateTimePicker(featureDate: false, initSelectDate:selectedDate) { date in
                     self.selectedDate = date
@@ -806,7 +806,7 @@ struct BloodTypeSelectSheet: View {
     let onSave: () -> Void
     @Environment(\.dismiss) private var dismiss
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 20) {
                 HStack {
                     ForEach(BloodType.allCases, id: \.self) { bloodOption in
@@ -858,7 +858,7 @@ struct MaritalStatusSelectSheet: View {
     let onSave: () -> Void
     @Environment(\.dismiss) private var dismiss
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 VStack {
                     ScrollView(showsIndicators:false) {
@@ -903,7 +903,7 @@ struct NationalitySelectSheet: View {
     @Environment(\.dismiss) private var dismiss
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack {
                 VStack {
                     ScrollView(showsIndicators:false) {
@@ -952,7 +952,7 @@ struct PeopleTagAddSheet: View {
     let fontCount = 10;
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 20) {
                 // 添加新标签区域
                 VStack(alignment: .leading, spacing: 12) {

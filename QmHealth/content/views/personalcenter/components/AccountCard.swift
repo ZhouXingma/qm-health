@@ -9,10 +9,20 @@ import SwiftUI
 
 // MARK: - 账号卡片组件
 struct AccountCard: View {
+    // 与首页一致的显示偏好：昵称 / 姓名
+    @AppStorage("home2.displayNickname") private var showNickname: Bool = false
     let user: UserDTO
     let isCurrentUser: Bool
     let onSwitch: () -> Void
     let onDelete: () -> Void
+
+    // 当前展示的名称（跟随首页的姓名/昵称偏好）
+    private var displayName: String {
+        if showNickname, let nickname = user.nickname, !nickname.isEmpty {
+            return nickname
+        }
+        return user.name ?? "未设置姓名"
+    }
     
     // 计算年龄
     private var age: Int? {
@@ -35,7 +45,7 @@ struct AccountCard: View {
                 // 用户信息
                 VStack(alignment: .leading, spacing: 4) {
                     HStack(spacing: 8) {
-                        Text(user.name ?? "未设置姓名")
+                        Text(displayName)
                             .font(.system(size: 16, weight: .semibold))
                             .foregroundColor(Color("text_primary"))
                             .lineLimit(1)

@@ -48,7 +48,7 @@ struct EditProfileView: View {
     @StateObject private var popManager = PopManager()
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 Color("background").ignoresSafeArea()
                 

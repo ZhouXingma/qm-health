@@ -30,7 +30,7 @@ struct AddWaterRecordSheet: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ScrollView {
                 VStack(spacing: AppSpacing.card) {
                     // 当前饮水量显示区域

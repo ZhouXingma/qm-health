@@ -55,7 +55,7 @@ struct AIPlanGeneratorView: View {
     @State private var currentMessageId: String? = nil
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             ZStack {
                 Color("background")
                     .ignoresSafeArea()
@@ -881,7 +881,7 @@ struct RegenerateInputSheet: View {
     let onConfirm: () -> Void
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(spacing: 20) {
                 VStack(alignment: .leading, spacing: 8) {
                     Text("告诉AI您的想法")

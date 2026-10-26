@@ -327,7 +327,7 @@ struct YearMonthPickerSheet: View {
     }
     
     var body: some View {
-        NavigationView {
+        NavigationStack {
             HStack(spacing: 0) {
                 // 年份选择
                 Picker("年", selection: $selectedYear) {
