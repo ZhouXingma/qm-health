@@ -13,17 +13,27 @@ struct MedicineMainView: View {
     // 是否显示添加用药记录弹窗（放在页头右侧按钮，只在"用药记录"页展示）
     @State private var showAddRecord = false
     @State private var showAddPlanRecord = false
-    
+    // 是否显示用药 OCR 识别（页头左侧按钮，只在"用药计划"页展示）
+    @State private var showOcrPlan = false
+
     var body: some View {
         VStack(spacing: 0) {
             // 顶部标题 + 分页指示器（左右滑动切换）
-            MedicineTabHeader(selectedTab: $selectedTab, showAddRecord: $showAddRecord, showAddPlanRecord: $showAddPlanRecord)
+            MedicineTabHeader(
+                selectedTab: $selectedTab,
+                showAddRecord: $showAddRecord,
+                showAddPlanRecord: $showAddPlanRecord,
+                showOcrPlan: $showOcrPlan
+            )
 
             TabView(selection: $selectedTab) {
                 MedicineRecordsTabView(showAddRecord: $showAddRecord)
                     .tag(0)
 
-                MedicinePlanTabView(showAddPlanRecord: $showAddPlanRecord)
+                MedicinePlanTabView(
+                    showAddPlanRecord: $showAddPlanRecord,
+                    showOcrPlan: $showOcrPlan
+                )
                     .tag(1)
             }
             .tabViewStyle(.page(indexDisplayMode: .never))

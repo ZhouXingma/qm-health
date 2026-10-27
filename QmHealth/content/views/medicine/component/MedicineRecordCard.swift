@@ -102,6 +102,10 @@ struct MedicineRecordCard: View {
             }
             
             Spacer()
+
+            Image(systemName: "chevron.right")
+                .font(.system(size: 12, weight: .semibold))
+                .foregroundStyle(Color("text_secondary").opacity(0.5))
         }.cardStyle()
     }
 }

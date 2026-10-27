@@ -12,13 +12,25 @@ struct MedicineTabHeader: View {
     @Binding var selectedTab: Int
     @Binding var showAddRecord: Bool
     @Binding var showAddPlanRecord: Bool
+    @Binding var showOcrPlan: Bool
     private let titles = ["用药记录", "用药计划"]
-    
+
     var body: some View {
         HStack(spacing: 0) {
-            // 左侧占位，保持标题居中
-            Color.clear
-                .frame(width: 36, height: 36)
+            // 左侧操作：用药计划页提供 OCR 识别入口
+            if selectedTab == 1 {
+                Button(action: { showOcrPlan = true }) {
+                    Image(systemName: "doc.text.viewfinder")
+                        .font(.system(size: 16, weight: .semibold))
+                        .foregroundColor(.white)
+                        .frame(width: 36, height: 36)
+                        .appGlass(.regular.interactive().tint(Color.theme(.primary)), in: Circle())
+                }
+                .accessibilityLabel("拍照识别用药")
+            } else {
+                Color.clear
+                    .frame(width: 36, height: 36)
+            }
             
             Spacer()
             

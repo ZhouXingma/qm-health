@@ -1198,6 +1198,8 @@ struct OcrRecognizeView: View {
 // MARK: - 识别过程动效
 /// 模拟正在识别输出的过程动画：扫描线在报告上往复移动 + 三个跳动的小点 + 固定提示文案
 struct RecognizingAnimationView: View {
+    /// 识别提示文案，供不同识别场景复用。
+    var title: String = "正在识别报告单数据..."
     // 扫描线位置（0~1）
     @State private var scanProgress: CGFloat = 0
     // 小点透明度（跳动）
@@ -1248,7 +1250,7 @@ struct RecognizingAnimationView: View {
                 }
             }
 
-            Text("正在识别报告单数据...")
+            Text(title)
                 .font(.system(size: 13))
                 .foregroundStyle(Color("text_secondary"))
         }

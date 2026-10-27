@@ -56,7 +56,7 @@ struct PersonBasicInfoTabView: View {
                             icon: "calendar",
                             title: "年龄",
                             value: getAgeText(),
-                            subtitle: "周岁",
+                            subtitle: getAgeUnit(),
                             color: Color.theme(.chart3)
                         )
                     }
@@ -201,15 +201,12 @@ struct PersonBasicInfoTabView: View {
     
     // 获取年龄文本
     private func getAgeText() -> String {
-        guard let birthday = globalModel.currentUser?.birthday else { return "未知" }
-        
-        let formatter = DateFormatter()
-        formatter.dateFormat = "yyyy-MM-dd"
-        guard let birthDate = formatter.date(from: birthday) else { return "未知" }
-        
-        let calendar = Calendar.current
-        let ageComponents = calendar.dateComponents([.year], from: birthDate, to: Date())
-        return "\(ageComponents.year ?? 0)岁"
+        return CommUtils.ageText(globalModel.currentUser?.birthday) ?? "未知"
+    }
+
+    // 获取年龄单位：满 1 岁为周岁，不足 1 岁为月龄 / 日龄
+    private func getAgeUnit() -> String {
+        return CommUtils.ageUnit(globalModel.currentUser?.birthday) ?? "周岁"
     }
     
     // 获取血型文本

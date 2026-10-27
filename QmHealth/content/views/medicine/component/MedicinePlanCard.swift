@@ -49,41 +49,34 @@ struct MedicinePlanCard: View {
     // MARK: - 头部：图标 + 药品名称 + 规格 + 状态标签
     private var headerRow: some View {
         HStack(alignment: .center, spacing: 12) {
-            // 药品图标
+            // 药品图标（已失效的计划置灰）
             ZStack {
                 Circle()
-                    .fill(
-                        LinearGradient(
-                            colors: [Color.theme(.primary).opacity(0.16), Color.theme(.secondary).opacity(0.16)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
+                    .fill(iconBackground)
                     .frame(width: 44, height: 44)
 
                 Image(systemName: MedicineFormIcon.systemName(for: medicineFormDescription))
                     .font(.system(size: 19))
-                    .foregroundStyle(
-                        LinearGradient(
-                            colors: [Color.theme(.primary), Color.theme(.secondary)],
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
+                    .foregroundStyle(iconForeground)
             }
             .contentShape(Circle())
             .onTapGesture(perform: onEdit)
 
-            VStack(alignment: .leading, spacing: 4) {
+            VStack(alignment: .leading, spacing: 5) {
                 Text(plan.medicineName ?? "未知药品")
                     .font(.system(size: 16, weight: .semibold))
-                    .foregroundStyle(Color("text_primary"))
+                    .foregroundStyle(isExpired ? Color("text_secondary") : Color("text_primary"))
                     .lineLimit(1)
 
-                if !subtitleText.isEmpty {
-                    Text(subtitleText)
-                        .font(.system(size: 12))
-                        .foregroundStyle(Color("text_secondary"))
+                HStack(spacing: 6) {
+                    if !subtitleText.isEmpty {
+                        Text(subtitleText)
+                            .font(.system(size: 12))
+                            .foregroundStyle(Color("text_secondary"))
+                            .lineLimit(1)
+                    }
+
+                    statusBadge
                 }
             }
             .contentShape(Rectangle())
@@ -115,6 +108,60 @@ struct MedicinePlanCard: View {
             .accessibilityLabel(isDetailsExpanded ? "收起用药计划详情" : "展开用药计划详情")
             .accessibilityHint("查看服药安排、医嘱、计划周期和来源")
         }
+    }
+
+    // MARK: - 计划状态
+    private var isExpired: Bool {
+        plan.planStatus == .expired
+    }
+
+    private var statusColor: Color {
+        switch plan.planStatus {
+        case .active: return Color.theme(.primary)
+        case .upcoming: return Color.theme(.chart2)
+        case .expired: return Color("text_secondary")
+        }
+    }
+
+    /// 状态徽标：使用中 / 未开始 / 已失效
+    private var statusBadge: some View {
+        HStack(spacing: 3) {
+            Image(systemName: plan.planStatus.icon)
+                .font(.system(size: 9, weight: .semibold))
+            Text(plan.planStatus.title)
+                .font(.system(size: 11, weight: .semibold))
+        }
+        .foregroundStyle(statusColor)
+        .padding(.horizontal, 7)
+        .padding(.vertical, 4)
+        .background(Capsule().fill(statusColor.opacity(0.12)))
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("计划状态：\(plan.planStatus.title)")
+    }
+
+    /// 药品图标配色：使用中/未开始用主题渐变，已失效用灰色
+    private var iconBackground: AnyShapeStyle {
+        isExpired
+            ? AnyShapeStyle(Color("text_secondary").opacity(0.12))
+            : AnyShapeStyle(
+                LinearGradient(
+                    colors: [Color.theme(.primary).opacity(0.16), Color.theme(.secondary).opacity(0.16)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
+    }
+
+    private var iconForeground: AnyShapeStyle {
+        isExpired
+            ? AnyShapeStyle(Color("text_secondary").opacity(0.7))
+            : AnyShapeStyle(
+                LinearGradient(
+                    colors: [Color.theme(.primary), Color.theme(.secondary)],
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+            )
     }
 
     /// 剂型中文描述，用于显示和选择对应的 SF Symbol。
@@ -373,6 +420,41 @@ struct MedicinePlanCard: View {
                     id: "3",
                     medicineName: "布洛芬缓释胶囊",
                     frequencyType: 5,
+                    sourceType: 3
+                ),
+                valueScopes: mockValueScopes
+            )
+
+            // 已失效：结束日期早于今天，图标与药名置灰
+            MedicinePlanCard(
+                plan: UsersMedicinePlanDTO(
+                    id: "4",
+                    medicineName: "阿托伐他汀钙片",
+                    medicineForm: "2",
+                    specification: "20",
+                    specificationUnit: "mg",
+                    frequencyType: 1,
+                    takingInfo: TakingInfoRaw(times: [
+                        DoseTime(time: "21:00", doseUnit: "片", doseAmount: 1)
+                    ]),
+                    startDate: "2026-01-05",
+                    endDate: "2026-03-01",
+                    sourceType: 1
+                ),
+                valueScopes: mockValueScopes
+            )
+
+            // 未开始：开始日期晚于今天
+            MedicinePlanCard(
+                plan: UsersMedicinePlanDTO(
+                    id: "5",
+                    medicineName: "维生素C片",
+                    medicineForm: "2",
+                    frequencyType: 1,
+                    takingInfo: TakingInfoRaw(times: [
+                        DoseTime(time: "09:00", doseUnit: "片", doseAmount: 1)
+                    ]),
+                    startDate: "2026-12-01",
                     sourceType: 3
                 ),
                 valueScopes: mockValueScopes

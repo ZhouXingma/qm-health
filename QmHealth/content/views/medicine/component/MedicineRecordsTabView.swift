@@ -7,6 +7,8 @@ struct MedicineRecordsTabView: View {
     @State private var medicineRecords: [MedicineRecord] = []
     @State private var todayMedicinePlans: [TodayMedicinePlanDTO] = []
     @State private var selectedTodayMedicinePlan: TodayMedicinePlanDTO?
+    /// 非空时弹出编辑页，编辑该条已用药记录。
+    @State private var editingRecord: MedicineRecord?
     @State private var selectDayItem: DayItem = buildDayItem(date: Date())
     @State private var loadingRecords = false
     @State private var loadingTodayPlans = false
@@ -55,14 +57,19 @@ struct MedicineRecordsTabView: View {
                                 .padding(.vertical, 40)
                             } else {
                                 ForEach(medicineRecords) { record in
-                                    MedicineRecordCard(record: record)
-                                        .contextMenu {
-                                            Button(role: .destructive) {
-                                                deleteRecord(record: record)
-                                            } label: {
-                                                Label("删除", systemImage: "trash")
-                                            }
+                                    Button {
+                                        editingRecord = record
+                                    } label: {
+                                        MedicineRecordCard(record: record)
+                                    }
+                                    .buttonStyle(.plain)
+                                    .contextMenu {
+                                        Button(role: .destructive) {
+                                            deleteRecord(record: record)
+                                        } label: {
+                                            Label("删除", systemImage: "trash")
                                         }
+                                    }
                                 }
                             }
 
@@ -125,14 +132,15 @@ struct MedicineRecordsTabView: View {
             AddMedicineRecordView(
                 todayPlan: selectedTodayMedicinePlan,
                 onSave: {
-                    // 保存成功后刷新数据
-                    loadMedicineRecords(for: selectedDate)
-                    // 强制刷新标记日期（因为添加了新记录）
-                    loadMarkedDates(for: selectedDate, forceRefresh: true)
-                    // 用药记录可能已匹配到今日计划，刷新计划状态。
-                    loadTodayMedicinePlans()
-                    // 已服用的时间点要撤掉对应提醒。
-                    MedicineReminder.shared.refresh()
+                    refreshAfterRecordChange()
+                }
+            )
+        }
+        .sheet(item: $editingRecord) { record in
+            AddMedicineRecordView(
+                editingRecord: record,
+                onSave: {
+                    refreshAfterRecordChange()
                 }
             )
         }
@@ -246,6 +254,7 @@ struct MedicineRecordsTabView: View {
                         record.userId = dto.userId
                         record.medicineId = dto.medicineId
                         record.medicineName = dto.medicineName
+                        record.planId = dto.planId
                         record.dose = dto.dose
                         record.doseUnit = dto.doseUnit
                         record.specification = dto.specification
@@ -295,6 +304,14 @@ struct MedicineRecordsTabView: View {
                 // 加载失败时保持原有数据
             }
             .responseDecodable()
+    }
+
+    // MARK: - 新增/编辑后刷新
+    private func refreshAfterRecordChange() {
+        loadMedicineRecords(for: selectedDate)
+        loadMarkedDates(for: selectedDate, forceRefresh: true)
+        loadTodayMedicinePlans()
+        MedicineReminder.shared.refresh()
     }
 
     // MARK: - 删除记录

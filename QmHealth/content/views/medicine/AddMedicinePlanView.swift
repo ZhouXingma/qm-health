@@ -23,9 +23,18 @@ struct AddMedicinePlanView: View {
     let onDraftSaved: ((UsersMedicinePlanDTO) -> Void)?
     /// 非空时表示编辑模式，表单会使用详情接口返回的完整计划预填。
     let editingPlan: UsersMedicinePlanDTO?
+    /// 自定义页面标题，为空时按草稿/新增/编辑模式取默认值。
+    let headerTitle: String?
+    /// 自定义最终按钮文案，为空时按草稿/新增/编辑模式取默认值。
+    let submitTitle: String?
 
     private var isDraftMode: Bool {
         onDraftSaved != nil
+    }
+
+    /// 仅服务端已有 id 的计划才能删除；OCR/就诊记录中的本地草稿只能取消。
+    private var canDeletePlan: Bool {
+        editingPlan?.id != nil
     }
 
     @State private var medicineName = ""
@@ -83,7 +92,9 @@ struct AddMedicinePlanView: View {
         onSaved: @escaping (UsersMedicinePlanDTO) -> Void,
         editingPlan: UsersMedicinePlanDTO? = nil,
         onDeleted: @escaping () -> Void = {},
-        onDraftSaved: ((UsersMedicinePlanDTO) -> Void)? = nil
+        onDraftSaved: ((UsersMedicinePlanDTO) -> Void)? = nil,
+        headerTitle: String? = nil,
+        submitTitle: String? = nil
     ) {
         self._valueScopes = valueScopes
         self._medicineFormUnits = medicineFormUnits
@@ -91,6 +102,8 @@ struct AddMedicinePlanView: View {
         self.editingPlan = editingPlan
         self.onDeleted = onDeleted
         self.onDraftSaved = onDraftSaved
+        self.headerTitle = headerTitle
+        self.submitTitle = submitTitle
     }
 
     private var medicineForms: [ValueScopeItem] {
@@ -167,7 +180,7 @@ struct AddMedicinePlanView: View {
 
     var body: some View {
         VStack(spacing: 0) {
-            SheetHeader(title: isDraftMode ? "添加就诊用药" : (editingPlan == nil ? "添加用药计划" : "编辑用药计划"))
+            SheetHeader(title: headerTitle ?? (isDraftMode ? "添加就诊用药" : (editingPlan == nil ? "添加用药计划" : "编辑用药计划")))
                 .padding(.bottom, 12)
 
             planPreview
@@ -768,7 +781,7 @@ struct AddMedicinePlanView: View {
         HStack(spacing: 12) {
             Button(leftActionTitle) {
                 if currentStep == 0 {
-                    if editingPlan != nil {
+                    if canDeletePlan {
                         showsDeleteConfirmation = true
                     } else {
                         dismiss()
@@ -788,7 +801,7 @@ struct AddMedicinePlanView: View {
                     currentStep += 1
                 }
             } label: {
-                Text(currentStep == 2 && isSubmitting ? "保存中…" : (currentStep == 2 ? (isDraftMode ? "加入就诊记录" : (editingPlan == nil ? "完成" : "保存修改")) : "下一步"))
+                Text(currentStep == 2 && isSubmitting ? "保存中…" : (currentStep == 2 ? (submitTitle ?? (isDraftMode ? "加入就诊记录" : (editingPlan == nil ? "完成" : "保存修改"))) : "下一步"))
                     .foregroundStyle(AppColor.primary)
             }
             .buttonStyle(SecondaryActionButtonStyle())
@@ -802,7 +815,7 @@ struct AddMedicinePlanView: View {
     private var leftActionTitle: String {
         guard currentStep == 0 else { return "上一步" }
         if isDeleting { return "删除中…" }
-        return editingPlan == nil ? "取消" : "删除"
+        return canDeletePlan ? "删除" : "取消"
     }
 
     private var isCurrentStepValid: Bool {

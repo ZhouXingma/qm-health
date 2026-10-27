@@ -8,12 +8,15 @@ import SwiftUI
 // MARK: - 用药计划子页面
 struct MedicinePlanTabView: View {
     @Binding var showAddPlanRecord: Bool
+    /// 由页头左侧按钮触发的用药 OCR 识别。
+    @Binding var showOcrPlan: Bool
 
     @State private var plans: [UsersMedicinePlanDTO] = []
     @State private var editingPlan: UsersMedicinePlanDTO?
     @State private var isLoadingPlanDetail = false
     @State private var searchText = ""
     @State private var isLoadingPlans = false
+    @State private var statusFilter: PlanStatusFilter = .all
     @State private var searchTask: Task<Void, Never>?
     @FocusState private var isSearchFocused: Bool
     // 值域数据：medicineForm / medicineSpecificationUnit / medicineFrequencyType / medicinePlanSourceType
@@ -25,20 +28,24 @@ struct MedicinePlanTabView: View {
         VStack(spacing: 0) {
             searchBar
 
+            if !plans.isEmpty {
+                statusFilterBar
+            }
+
             Group {
                 if isLoadingPlans && plans.isEmpty {
                     Spacer()
                     ProgressView("正在加载用药计划…")
                         .tint(Color.theme(.primary))
                     Spacer()
-                } else if plans.isEmpty {
+                } else if displayPlans.isEmpty {
                     Spacer()
                     emptyStateView
                     Spacer()
                 } else {
                     ScrollView(.vertical, showsIndicators: false) {
                         LazyVStack(spacing: 14) {
-                            ForEach(plans) { plan in
+                            ForEach(displayPlans) { plan in
                                 MedicinePlanCard(plan: plan, valueScopes: valueScopes) {
                                 if let planId = plan.id {
                                     loadPlanDetail(id: planId)
@@ -89,6 +96,13 @@ struct MedicinePlanTabView: View {
                     MedicineReminder.shared.refresh()
                 }
             )
+        }
+        .sheet(isPresented: $showOcrPlan) {
+            MedicineOcrRecognizeView(saveMode: .directPlan) { _ in
+                // 组件内已完成保存，这里只刷新列表与提醒。
+                loadPlans()
+                MedicineReminder.shared.refresh()
+            }
         }
         .onAppear {
             loadValueScopes()
@@ -151,10 +165,36 @@ struct MedicinePlanTabView: View {
         }
     }
 
+    // MARK: - 状态筛选
+    private var statusFilterBar: some View {
+        GlassPillSegmentedSelector(
+            selection: Binding(
+                get: { PlanStatusFilter.allCases.firstIndex(of: statusFilter) ?? 0 },
+                set: { statusFilter = PlanStatusFilter.allCases[$0] }
+            ),
+            titles: PlanStatusFilter.allCases.map(\.title)
+        )
+        .padding(.horizontal, 20)
+        .padding(.bottom, 4)
+    }
+
+    /// 按状态筛选，并按「使用中 → 未开始 → 已失效」排序；同状态内保持服务端顺序。
+    private var displayPlans: [UsersMedicinePlanDTO] {
+        plans.enumerated()
+            .filter { statusFilter.matches($0.element.planStatus) }
+            .sorted { lhs, rhs in
+                let lhsRank = lhs.element.planStatus.sortRank
+                let rhsRank = rhs.element.planStatus.sortRank
+                return lhsRank == rhsRank ? lhs.offset < rhs.offset : lhsRank < rhsRank
+            }
+            .map(\.element)
+    }
+
     // MARK: - 空状态视图
     private var emptyStateView: some View {
-        VStack(spacing: 16) {
-            Image(systemName: "list.clipboard")
+        let isSearching = !searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+        return VStack(spacing: 16) {
+            Image(systemName: isSearching ? "magnifyingglass" : "list.clipboard")
                 .font(.system(size: 48))
                 .foregroundStyle(
                     LinearGradient(
@@ -164,13 +204,14 @@ struct MedicinePlanTabView: View {
                     )
                 )
 
-            Text(searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "暂无用药计划" : "未找到匹配的用药计划")
+            Text(isSearching ? "未找到匹配的用药计划" : statusFilter.emptyTitle)
                 .font(.system(size: 15, weight: .medium))
                 .foregroundStyle(Color("text_primary"))
 
-            Text(searchText.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? "点击右上角 + 号添加用药计划" : "请尝试其他药品名称")
+            Text(isSearching ? "请尝试其他药品名称" : statusFilter.emptyHint)
                 .font(.system(size: 13))
                 .foregroundStyle(Color("text_secondary"))
+                .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
         .padding(.horizontal, 32)
@@ -252,6 +293,46 @@ struct MedicinePlanTabView: View {
     }
 }
 
+// MARK: - 计划状态筛选
+private enum PlanStatusFilter: CaseIterable {
+    case all
+    case valid
+    case expired
+
+    var title: String {
+        switch self {
+        case .all: return "全部"
+        case .valid: return "有效"
+        case .expired: return "已失效"
+        }
+    }
+
+    /// 「有效」包含使用中与未开始的计划，仅已失效计划归入「已失效」
+    func matches(_ status: MedicinePlanStatus) -> Bool {
+        switch self {
+        case .all: return true
+        case .valid: return status != .expired
+        case .expired: return status == .expired
+        }
+    }
+
+    var emptyTitle: String {
+        switch self {
+        case .all: return "暂无用药计划"
+        case .valid: return "暂无有效用药计划"
+        case .expired: return "暂无已失效的用药计划"
+        }
+    }
+
+    var emptyHint: String {
+        switch self {
+        case .all: return "点击右上角 + 号添加，或点击左上角识别处方"
+        case .valid: return "使用中的计划会显示在这里，点击右上角 + 号添加"
+        case .expired: return "结束日期早于今天的计划会归入这里"
+        }
+    }
+}
+
 #Preview {
-    MedicinePlanTabView(showAddPlanRecord: .constant(false))
+    MedicinePlanTabView(showAddPlanRecord: .constant(false), showOcrPlan: .constant(false))
 }

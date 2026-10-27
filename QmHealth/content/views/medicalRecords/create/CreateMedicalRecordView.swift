@@ -41,6 +41,7 @@ struct CreateMedicalRecordView: View {
     @State private var showImagePicker = false
     @State private var showOcrSheet = false
     @State private var showAddMedicine = false
+    @State private var showMedicineOcr = false
     @State private var editingReportIndex: Int?
     @State private var viewingReportIndex: Int?
     @State private var showVoiceInput = false
@@ -141,6 +142,7 @@ struct CreateMedicalRecordView: View {
                                 medicineValueScopes["medicineForm"]?.desc(forValue: form) ?? "未设置剂型"
                             },
                             onAdd: { showAddMedicine = true },
+                            onOcr: { showMedicineOcr = true },
                             onDelete: { index in medicines.remove(at: index) }
                         )
 
@@ -207,6 +209,12 @@ struct CreateMedicalRecordView: View {
         }
         .sheet(isPresented: $showFilePicker) {
             DocumentPicker(reportFiles: $reportFiles)
+        }
+        .sheet(isPresented: $showMedicineOcr) {
+            MedicineOcrRecognizeView(saveMode: .draft) { plans in
+                // 识别结果先暂存在表单里，随就诊记录一起提交。
+                medicines.append(contentsOf: plans)
+            }
         }
         .sheet(isPresented: $showOcrSheet) {
             OcrRecognizeView(
@@ -776,13 +784,42 @@ private struct MedicalRecordMedicineSection: View {
     let medicines: [UsersMedicinePlanDTO]
     let medicineFormDescription: (String) -> String
     let onAdd: () -> Void
+    let onOcr: () -> Void
     let onDelete: (Int) -> Void
 
     var body: some View {
         VStack(spacing: 0) {
-            HStack {
+            HStack(spacing: 8) {
                 SectionHeader(title: "用药信息", icon: "pills.fill")
                 Spacer()
+
+                Button(action: onOcr) {
+                    HStack(spacing: 6) {
+                        Image(systemName: "doc.text.viewfinder")
+                            .font(.system(size: 16, weight: .semibold))
+                        Text("识别")
+                            .font(.system(size: 15, weight: .semibold))
+                    }
+                    .foregroundColor(.white)
+                    .padding(.horizontal, 8)
+                    .padding(.vertical, 4)
+                    .appGlass(
+                        Glass.regular.interactive().tint(Color.theme(.primary)),
+                        in: Capsule()
+                    ) {
+                        Capsule()
+                            .fill(
+                                LinearGradient(
+                                    colors: [Color.theme(.primary), Color.theme(.primary).opacity(0.85)],
+                                    startPoint: .leading,
+                                    endPoint: .trailing
+                                )
+                            )
+                            .shadow(color: Color.theme(.primary).opacity(0.3), radius: 6, x: 0, y: 3)
+                    }
+                }
+                .accessibilityLabel("拍照识别用药信息")
+
                 Button(action: onAdd) {
                     HStack(spacing: 6) {
                         Image(systemName: "plus.circle.fill")
@@ -842,9 +879,10 @@ private struct EmptyMedicineView: View {
                 .font(.system(size: 15, weight: .medium))
                 .foregroundColor(Color("text_secondary"))
 
-            Text("添加本次就诊开具的药品，保存记录时会一并提交")
+            Text("添加本次就诊开具的药品，或识别处方/药盒，保存记录时会一并提交")
                 .font(.system(size: 13))
                 .foregroundColor(Color("text_secondary").opacity(0.7))
+                .multilineTextAlignment(.center)
 
             Button(action: onAdd) {
                 HStack(spacing: 6) {
@@ -879,6 +917,13 @@ private struct MedicalRecordMedicineRow: View {
 
     private var statusText: String {
         medicine.id == nil ? "待随本次就诊记录保存" : "已保存，仅可删除；如需修改请删除后重新添加"
+    }
+
+    /// 用药周期文案（如 "2025-01-01 至 长期"）
+    private var periodText: String {
+        let start = medicine.startDate?.isEmpty == false ? medicine.startDate! : "--"
+        let end = medicine.endDate?.isEmpty == false ? medicine.endDate! : "长期"
+        return "\(start) 至 \(end)"
     }
 
     var body: some View {
@@ -917,6 +962,15 @@ private struct MedicalRecordMedicineRow: View {
                     Text(medicine.specificationString.isEmpty ? "未填写规格" : medicine.specificationString)
                 }
                 .font(.system(size: 13))
+                .foregroundColor(Color("text_secondary"))
+
+                HStack(spacing: 4) {
+                    Image(systemName: "calendar")
+                        .font(.system(size: 11))
+                    Text(periodText)
+                        .lineLimit(1)
+                }
+                .font(.system(size: 12))
                 .foregroundColor(Color("text_secondary"))
 
                 Text(statusText)

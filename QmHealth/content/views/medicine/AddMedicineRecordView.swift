@@ -12,8 +12,11 @@ struct AddMedicineRecordView: View {
     var onSave: (() -> Void)? = nil
     /// 从今日用药计划打开时，用于预填表单并关联保存的计划 ID。
     var todayPlan: TodayMedicinePlanDTO? = nil
+    /// 传入已有记录时进入编辑模式，保存时携带记录 ID 覆盖原记录。
+    var editingRecord: MedicineRecord? = nil
 
-    init(todayPlan: TodayMedicinePlanDTO? = nil, onSave: (() -> Void)? = nil) {
+    init(editingRecord: MedicineRecord? = nil, todayPlan: TodayMedicinePlanDTO? = nil, onSave: (() -> Void)? = nil) {
+        self.editingRecord = editingRecord
         self.todayPlan = todayPlan
         self.onSave = onSave
     }
@@ -32,6 +35,8 @@ struct AddMedicineRecordView: View {
     @State private var historyMedicines: [UsersMedicineDTO] = []
     @State private var loadingHistory = false
     @State private var valueScopes: [String: ValueScopeInfo] = [:]
+    /// 编辑模式下是否已回填过表单，避免 onAppear 重复覆盖用户修改。
+    @State private var didApplyEditingRecord = false
     
     // 用药计划匹配（药品名称输入时联想）
     @State private var planSuggestions: [UsersMedicinePlanDTO] = []
@@ -71,7 +76,7 @@ struct AddMedicineRecordView: View {
     var body: some View {
         VStack(spacing: 0) {
             // Header
-            SheetHeader(title: "添加用药记录")
+            SheetHeader(title: editingRecord == nil ? "添加用药记录" : "编辑用药记录")
                 .padding(.bottom, 16)
             
             ZStack {
@@ -80,7 +85,7 @@ struct AddMedicineRecordView: View {
                         // 服药时间
                         timeSection
 
-                        if let planId, !planId.isEmpty {
+                        if let planId, !planId.isEmpty, todayPlan != nil {
                             planAssociationSection(planId: planId)
                         }
                         
@@ -113,6 +118,7 @@ struct AddMedicineRecordView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color("background"))
         .onAppear {
+            applyEditingRecordIfNeeded()
             applyTodayPlanIfNeeded()
             loadHistoryMedicines()
             loadValueScopes()
@@ -569,6 +575,27 @@ struct AddMedicineRecordView: View {
         }
     }
     
+    // MARK: - 预填编辑记录
+    private func applyEditingRecordIfNeeded() {
+        guard let record = editingRecord, !didApplyEditingRecord else { return }
+        didApplyEditingRecord = true
+
+        medicineId = record.medicineId
+        planId = record.planId
+        // 回填名称会触发 onChange 的重置逻辑，这里标记为程序赋值。
+        if medicineName != (record.medicineName ?? "") {
+            isApplyingMedicineSelection = true
+        }
+        medicineName = record.medicineName ?? ""
+        specification = record.specification ?? ""
+        specificationUnit = record.specificationUnit ?? specificationUnit
+        dosageAmount = record.dose ?? ""
+        dosageUnit = record.doseUnit ?? dosageUnit
+        remark = record.remarks ?? ""
+        adverseReactions = record.adverseReactions ?? ""
+        selectedDate = record.takingTime ?? Date()
+    }
+
     // MARK: - 预填今日用药计划
     private func applyTodayPlanIfNeeded() {
         guard let todayPlan, planId == nil else { return }
@@ -611,7 +638,7 @@ struct AddMedicineRecordView: View {
         
         // 构建请求参数
         var params = UsersMedicineDTO(
-            id: nil,
+            id: editingRecord?.idValue,
             userId: nil,
             medicineId: medicineId,
             medicineName: medicineName.isEmpty ? nil : medicineName,

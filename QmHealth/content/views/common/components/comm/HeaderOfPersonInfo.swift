@@ -37,11 +37,8 @@ struct HeaderOfPersonInfo: View {
     }
     // 年龄文案（仅在 showsAge 时展示）
     private var ageText: String? {
-        guard showsAge,
-              let age = PortraitAnimation.age(from: globalModel.currentUser?.birthday) else {
-            return nil
-        }
-        return "\(age)岁"
+        guard showsAge else { return nil }
+        return CommUtils.ageText(globalModel.currentUser?.birthday)
     }
     var body: some View {
         // 基本头像和基本信息

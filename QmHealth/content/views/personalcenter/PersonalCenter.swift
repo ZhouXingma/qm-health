@@ -249,14 +249,8 @@ struct UserProfileCard: View {
     }
     
     // 计算年龄
-    private var age: Int? {
-        guard let birthday = globalModel.currentUser?.birthday else { return nil }
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "yyyy-MM-dd"
-        guard let birthDate = dateFormatter.date(from: birthday) else { return nil }
-        let calendar = Calendar.current
-        let ageComponents = calendar.dateComponents([.year], from: birthDate, to: Date())
-        return ageComponents.year
+    private var ageText: String? {
+        return CommUtils.ageText(globalModel.currentUser?.birthday)
     }
     
     var body: some View {
@@ -289,12 +283,12 @@ struct UserProfileCard: View {
                     
                     // 年龄和其他信息
                     HStack(spacing: 10) {
-                        if let calculatedAge = age {
+                        if let ageText {
                             HStack(spacing: 3) {
                                 Image(systemName: "calendar")
                                     .font(.system(size: 11))
                                     .foregroundColor(Color("text_secondary"))
-                                Text("\(calculatedAge)岁")
+                                Text(ageText)
                                     .font(.system(size: 13))
                                     .foregroundColor(Color("text_secondary"))
                             }

@@ -14,6 +14,7 @@ struct MedicineRecord: Identifiable, Codable {
     var userId: String?
     var medicineId: String?
     var medicineName: String?
+    var planId: String?
     var dose: String?
     var doseUnit: String?
     var specification: String?
@@ -39,6 +40,7 @@ struct MedicineRecord: Identifiable, Codable {
         self.userId = nil
         self.medicineId = nil
         self.medicineName = nil
+        self.planId = nil
         self.dose = nil
         self.doseUnit = nil
         self.specification = nil
@@ -54,6 +56,7 @@ struct MedicineRecord: Identifiable, Codable {
         case userId
         case medicineId
         case medicineName
+        case planId
         case dose
         case doseUnit
         case specification

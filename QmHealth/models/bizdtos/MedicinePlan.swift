@@ -196,6 +196,77 @@ struct UsersMedicinePlanDTO: Codable, Identifiable {
         guard let spec = specification, !spec.isEmpty else { return "" }
         return "\(spec)\(specificationUnit ?? "")"
     }
+
+    /// 计划状态（按今天判断）
+    var planStatus: MedicinePlanStatus {
+        planStatus(on: Date())
+    }
+
+    /// 指定日期的计划状态
+    /// - 开始日期晚于该日期：未开始
+    /// - 结束日期早于该日期：已失效（结束日期为空表示长期服药）
+    /// - 其余：使用中
+    func planStatus(on date: Date) -> MedicinePlanStatus {
+        let calendar = Calendar.current
+        let today = calendar.startOfDay(for: date)
+
+        if let start = Self.planDay(startDate), start > today {
+            return .upcoming
+        }
+        if let end = Self.planDay(endDate), end < today {
+            return .expired
+        }
+        return .active
+    }
+
+    /// 计划日期（yyyy-MM-dd）解析为当天零点
+    static func planDay(_ text: String?) -> Date? {
+        guard let text, !text.isEmpty else { return nil }
+        guard let date = planDayFormatter.date(from: text) else { return nil }
+        return Calendar.current.startOfDay(for: date)
+    }
+
+    private static let planDayFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "yyyy-MM-dd"
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        return formatter
+    }()
+}
+
+// MARK: - 用药计划状态（由计划周期推导，不依赖服务端字段）
+enum MedicinePlanStatus {
+    /// 开始日期未到
+    case upcoming
+    /// 在计划周期内
+    case active
+    /// 已过结束日期
+    case expired
+
+    var title: String {
+        switch self {
+        case .upcoming: return "未开始"
+        case .active: return "使用中"
+        case .expired: return "已失效"
+        }
+    }
+
+    var icon: String {
+        switch self {
+        case .upcoming: return "clock.fill"
+        case .active: return "checkmark.circle.fill"
+        case .expired: return "xmark.circle.fill"
+        }
+    }
+
+    /// 列表排序权重：使用中 → 未开始 → 已失效
+    var sortRank: Int {
+        switch self {
+        case .active: return 0
+        case .upcoming: return 1
+        case .expired: return 2
+        }
+    }
 }
 
 // MARK: - 用药计划来源：1-医院处方, 2-药店购买, 3-自行添加
